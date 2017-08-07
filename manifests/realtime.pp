@@ -109,23 +109,23 @@
 #
 
 class druid::realtime (
-  $host                                 = hiera("${module_name}::druid::coordinator::host", $ipaddress),
-  $port                                 = hiera("${module_name}::druid::coordinator::port", 8084),
-  $service                              = hiera("${module_name}::druid::coordinator::service", 'druid/realtime'),
-  $jvm_opts                             = hiera_array("${module_name}::broker::jvm_opts", ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']),
-  $processing_buffer_size_bytes         = hiera("${module_name}::druid::coordinator::processing_buffer_size_bytes", 1073741824),
-  $processing_column_cache_size_bytes   = hiera("${module_name}::druid::coordinator::processing_column_cache_size_bytes", 0),
-  $processing_format_string             = hiera("${module_name}::druid::coordinator::processing_format_string", 'processing-%s'),
-  $processing_num_threads               = hiera("${module_name}::druid::coordinator::processing_num_threads", undef),
-  $publish_type                         = hiera("${module_name}::druid::coordinator::publish_type", 'metadata'),
-  $query_group_by_max_intermediate_rows = hiera("${module_name}::druid::coordinator::query_group_by_max_intermediate_rows", 50000),
-  $query_group_by_max_results           = hiera("${module_name}::druid::coordinator::query_group_by_max_results", 500000),
-  $query_group_by_single_threaded       = hiera("${module_name}::druid::coordinator::query_group_by_single_threaded", false),
-  $query_search_max_search_limit        = hiera("${module_name}::druid::coordinator::query_search_max_search_limit", 1000),
-  $segment_cache_locations              = hiera("${module_name}::druid::coordinator::segment_cache_locations", undef),
-  $spec_file                            = hiera("${module_name}::druid::coordinator::spec_file", undef),
-  $spec_file_content                    = hiera("${module_name}::druid::coordinator::spec_file_content", undef),
-) {
+  $host                                 = $druid::params::realtime_host,
+  $port                                 = $druid::params::realtime_port,
+  $service                              = $druid::params::realtime_service,
+  $jvm_opts                             = $druid::params::realtime_jvm_opts,
+  $processing_buffer_size_bytes         = $druid::params::realtime_processing_buffer_size_bytes,
+  $processing_column_cache_size_bytes   = $druid::params::realtime_processing_column_cache_size_bytes,
+  $processing_format_string             = $druid::params::realtime_processing_format_string,
+  $processing_num_threads               = $druid::params::realtime_processing_num_threads,
+  $publish_type                         = $druid::params::realtime_publish_type,
+  $query_group_by_max_intermediate_rows = $druid::params::realtime_query_group_by_max_intermediate_rows,
+  $query_group_by_max_results           = $druid::params::realtime_query_group_by_max_results,
+  $query_group_by_single_threaded       = $druid::params::realtime_query_group_by_single_threaded,
+  $query_search_max_search_limit        = $druid::params::realtime_query_search_max_search_limit,
+  $segment_cache_locations              = $druid::params::realtime_segment_cache_locations,
+  $spec_file                            = $druid::params::realtime_spec_file,
+  $spec_file_content                    = $druid::params::realtime_spec_file_content,
+) inherits druid::params {
   require druid
 
   validate_string(

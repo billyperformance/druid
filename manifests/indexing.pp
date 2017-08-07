@@ -37,14 +37,14 @@
 #
 
 class druid::indexing (
-  $azure_logs_container = hiera("${module_name}::indexing::azure_logs_container", undef),
-  $azure_logs_prefix    = hiera("${module_name}::indexing::azure_logs_prefix", undef),
-  $hdfs_logs_directory  = hiera("${module_name}::indexing::hdfs_logs_directory", undef),
-  $local_logs_directory = hiera("${module_name}::indexing::local_logs_directory", '/var/log'),
-  $logs_type            = hiera("${module_name}::indexing::logs_type", 'file'),
-  $s3_logs_bucket       = hiera("${module_name}::indexing::s3_logs_bucket", undef),
-  $s3_logs_prefix       = hiera("${module_name}::indexing::s3_logs_prefix", undef),
-) {
+  $azure_logs_container = $druid::params::indexing_azure_logs_container,
+  $azure_logs_prefix    = $druid::params::indexing_azure_logs_prefix,
+  $hdfs_logs_directory  = $druid::params::indexing_hdfs_logs_directory,
+  $local_logs_directory = $druid::params::indexing_local_logs_directory,
+  $logs_type            = $druid::params::indexing_logs_type,
+  $s3_logs_bucket       = $druid::params::indexing_s3_logs_bucket,
+  $s3_logs_prefix       = $druid::params::indexing_s3_logs_prefix,
+) inherits druid::params {
   require druid
 
   validate_re($logs_type, ['^noop$', '^s3$', '^azure$', '^hdfs$', '^file$'])

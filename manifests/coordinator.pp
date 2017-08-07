@@ -120,22 +120,22 @@
 #
 
 class druid::coordinator (
-  $host                          = hiera("${module_name}::druid::coordinator::host", $ipaddress),
-  $port                          = hiera("${module_name}::druid::coordinator::port", 8081),
-  $service                       = hiera("${module_name}::druid::coordinator::service", 'druid/coordinator'),
-  $conversion_on                 = hiera("${module_name}::druid::coordinator::conversion_on", false),
-  $jvm_opts                      = hiera_array("${module_name}::broker::jvm_opts", ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']),
-  $load_timeout                  = hiera("${module_name}::druid::coordinator::load_timeout", 'PT15M'),
-  $manager_config_poll_duration  = hiera("${module_name}::druid::coordinator::manager_config_poll_duration", 'PT1m'),
-  $manager_rules_alert_threshold = hiera("${module_name}::druid::coordinator::manager_rules_alert_threshold", 'PT10M'),
-  $manager_rules_default_tier    = hiera("${module_name}::druid::coordinator::manager_rules_default_tier", '_default'),
-  $manager_rules_poll_duration   = hiera("${module_name}::druid::coordinator::manager_rules_poll_duration", 'PT1M'),
-  $manager_segment_poll_duration = hiera("${module_name}::druid::coordinator::manager_segment_poll_duration", 'PT1M'),
-  $merge_on                      = hiera("${module_name}::druid::coordinator::merge_on", false),
-  $period                        = hiera("${module_name}::druid::coordinator::period", 'PT60S'),
-  $period_indexing_period        = hiera("${module_name}::druid::coordinator::period_indexing_period", 'PT1800S'),
-  $start_delay                   = hiera("${module_name}::druid::coordinator::start_delay", 'PT300S'),
-) {
+  $host                          = $druid::params::coordinator_host,
+  $port                          = $druid::params::coordinator_port,
+  $service                       = $druid::params::coordinator_service,
+  $conversion_on                 = $druid::params::coordinator_conversion_on,
+  $jvm_opts                      = $druid::params::coordinator_jvm_opts,
+  $load_timeout                  = $druid::params::coordinator_load_timeout,
+  $manager_config_poll_duration  = $druid::params::coordinator_manager_config_poll_duration,
+  $manager_rules_alert_threshold = $druid::params::coordinator_manager_rules_alert_threshold,
+  $manager_rules_default_tier    = $druid::params::coordinator_manager_rules_default_tier,
+  $manager_rules_poll_duration   = $druid::params::coordinator_manager_rules_poll_duration,
+  $manager_segment_poll_duration = $druid::params::coordinator_manager_segment_poll_duration,
+  $merge_on                      = $druid::params::coordinator_merge_on,
+  $period                        = $druid::params::coordinator_period,
+  $period_indexing_period        = $druid::params::coordinator_period_indexing_period,
+  $start_delay                   = $druid::params::coordinator_start_delay,
+) inherits druid::params {
   require druid
 
   validate_string(
@@ -151,9 +151,9 @@ class druid::coordinator (
     $period_indexing_period,
     $start_delay,
   )
-  
+
   validate_integer($port)
-  
+
   validate_bool($conversion_on, $merge_on)
 
   validate_array($jvm_opts)
