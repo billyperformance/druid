@@ -3,6 +3,7 @@ class druid::params() {
   $install_dir                                        = '/opt'
   $install_java                                       = true
   $config_dir                                         = '/etc/druid'
+  $extra_classpaths                                   = '/etc/druid'
   $extensions_remote_repositories                     = ['http://repo1.maven.org/maven2/', 'https://metamx.artifactoryonline.com/metamx/pub-libs-releases-local']
   $extensions_local_repository                        = '~/.m2/repository'
   $extensions_coordinates                             = []
