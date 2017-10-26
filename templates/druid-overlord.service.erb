@@ -3,8 +3,8 @@ Description=Druid Overlord Node
 
 [Service]
 Type=simple
-WorkingDirectory=/etc/druid/overlord/
-ExecStart=/usr/bin/java <%= @jvm_opts.join(' ') %> -classpath .:<%= scope.lookupvar("::#{@module_name}::extra_classpaths") %>:<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/lib/* io.druid.cli.Main server overlord
+WorkingDirectory=<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/
+ExecStart=/usr/bin/java <%= @jvm_opts.join(' ') %> -classpath .:/etc/druid/overlord/:<%= scope.lookupvar("::#{@module_name}::extra_classpaths") %>:<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/lib/* io.druid.cli.Main server overlord
 SuccessExitStatus=130 143
 Restart=on-failure
 

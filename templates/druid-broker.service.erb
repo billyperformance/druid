@@ -3,8 +3,8 @@ Description=Druid Broker Node
 
 [Service]
 Type=simple
-WorkingDirectory=/etc/druid/broker/
-ExecStart=/usr/bin/java <%= @jvm_opts.join(' ') %> -classpath .:<%= scope.lookupvar("::#{@module_name}::extra_classpaths") %>:<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/lib/* io.druid.cli.Main server broker
+WorkingDirectory=<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/
+ExecStart=/usr/bin/java <%= @jvm_opts.join(' ') %> -classpath .:/etc/druid/broker/:<%= scope.lookupvar("::#{@module_name}::extra_classpaths") %>:<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/lib/* io.druid.cli.Main server broker
 SuccessExitStatus=130 143
 Restart=on-failure
 
