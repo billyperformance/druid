@@ -410,6 +410,8 @@ class druid (
   $extensions_remote_repositories           = $druid::params::extensions_remote_repositories,
   $extensions_local_repository              = $druid::params::extensions_local_repository,
   $extensions_coordinates                   = $druid::params::extensions_coordinates,
+  $extensions_hadoop_deps_dir               = $druid::params::extensions_hadoop_deps_dir,
+  $extensions_loadlist                      = $druid::params::extensions_loadlist,
   $extensions_default_version               = $druid::params::extensions_default_version,
   $extensions_search_current_classloader    = $druid::params::extensions_search_current_classloader,
   $zk_service_host                          = $druid::params::zk_service_host,

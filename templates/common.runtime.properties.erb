@@ -21,6 +21,12 @@ druid.extensions.defaultVersion=<%= @extensions_default_version %>
 <% if @extensions_search_current_classloader != '' -%>
 druid.extensions.searchCurrentClassloader=<%= @extensions_search_current_classloader %>
 <% end -%>
+<% if @extensions_loadlist and @extensions_loadlist != [] and @extensions_loadlist != '' -%>
+druid.extensions.loadList=["<%= @extensions_loadlist.join('", "') %>"]
+<% end -%>
+<% if @extensions_hadoop_deps_dir != '' -%>
+druid.extensions.hadoopDependenciesDir=<%= @extensions_hadoop_deps_dir %>
+<% end -%>
 
 # Zookeeper
 <% if @zk_paths_base and @zk_paths_base != '' -%>
