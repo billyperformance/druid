@@ -107,6 +107,7 @@ class druid::params() {
   $broker_select_tier                                 = 'highestPriority'
   $broker_server_http_max_idle_time                   = 'PT5m'
   $broker_server_http_num_threads                     = 10
+  $broker_num_merge_buffers                           = 1
   $coordinator_host                                   = $::ipaddress
   $coordinator_port                                   = 8081
   $coordinator_service                                = 'druid/coordinator'

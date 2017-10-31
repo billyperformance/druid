@@ -261,6 +261,7 @@ class druid::broker (
   $select_tier                          = $druid::params::broker_select_tier,
   $server_http_max_idle_time            = $druid::params::broker_server_http_max_idle_time,
   $server_http_num_threads              = $druid::params::broker_server_http_num_threads,
+  $num_merge_buffers                    = $druid::params::broker_num_merge_buffers,
 ) inherits druid::params {
   require druid
 
