@@ -480,6 +480,13 @@ class druid (
   $announcer_type                           = $druid::params::announcer_type,
   $announcer_segments_per_node              = $druid::params::announcer_segments_per_node,
   $announcer_max_bytes_per_node             = $druid::params::announcer_max_bytes_per_node,
+  $azure_logs_container                     = $druid::params::indexing_azure_logs_container,
+  $azure_logs_prefix                        = $druid::params::indexing_azure_logs_prefix,
+  $hdfs_logs_directory                      = $druid::params::indexing_hdfs_logs_directory,
+  $local_logs_directory                     = $druid::params::indexing_local_logs_directory,
+  $logs_type                                = $druid::params::indexing_logs_type,
+  $s3_logs_bucket                           = $druid::params::indexing_s3_logs_bucket,
+  $s3_logs_prefix                           = $druid::params::indexing_s3_logs_prefix,
 ) inherits druid::params {
   validate_string(
     $extensions_local_repository,
@@ -525,7 +532,15 @@ class druid (
     $cache_uncacheable,
     $cache_memcached_prefix,
     $selectors_indexing_service_name,
+    $azure_logs_container,
+    $azure_logs_prefix,
+    $hdfs_logs_directory,
+    $local_logs_directory,
+    $s3_logs_bucket,
+    $s3_logs_prefix,
   )
+
+  validate_re($logs_type, ['^noop$', '^s3$', '^azure$', '^hdfs$', '^file$'])
 
   validate_array(
     $extensions_remote_repositories,
