@@ -243,6 +243,15 @@ druid.cache.memcachedPrefix=<%= @cache_memcached_prefix %>
 druid.selectors.indexing.serviceName=<%= @selectors_indexing_service_name %>
 <% end -%>
 
+# Logging
+# #
+#
+# # Log all runtime properties on startup. Disable to avoid logging properties on startup:
+
+<% if @log_properties and @log_properties != '' -%>
+druid.startup.logging.logProperties=<%= @log_properties %>
+<% end -%>
+#
 # Announcing Segments
 <% if @announcer_type and @announcer_type != '' -%>
 druid.announcer.type=<%= @announcer_type %>

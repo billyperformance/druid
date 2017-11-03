@@ -9,6 +9,7 @@ class druid::params() {
   $extensions_coordinates                             = []
   $extensions_default_version                         = undef
   $extensions_search_current_classloader              = true
+  $log_properties                                     = true
   $zk_service_host                                    = 'localhost'
   $zk_service_session_timeout_ms                      = 30000
   $curator_compress                                   = true

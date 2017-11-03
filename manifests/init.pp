@@ -414,6 +414,7 @@ class druid (
   $extensions_loadlist                      = $druid::params::extensions_loadlist,
   $extensions_default_version               = $druid::params::extensions_default_version,
   $extensions_search_current_classloader    = $druid::params::extensions_search_current_classloader,
+  $log_properties                           = $druid::params::log_properties,
   $zk_service_host                          = $druid::params::zk_service_host,
   $zk_service_session_timeout_ms            = $druid::params::zk_service_session_timeout_ms,
   $curator_compress                         = $druid::params::curator_compress,
