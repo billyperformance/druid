@@ -44,6 +44,19 @@ druid.worker.version=<%= @worker_version %>
 druid.worker.capacity=<%= @worker_capacity %>
 <% end -%>
 
+# Processing
+<% if @processing_buffer_size_bytes and @processing_buffer_size_bytes != '' -%>
+druid.processing.buffer.sizeBytes=<%= @processing_buffer_size_bytes %>
+<% end -%>
+<% if @processing_format_string and @processing_format_string != '' -%>
+druid.processing.formatString=<%= @processing_format_string %>
+<% end -%>
+<% if @processing_num_threads and @processing_num_threads != '' -%>
+druid.processing.numThreads=<%= @processing_num_threads %>
+<% end -%>
+<% if @processing_column_cache_size_bytes and @processing_column_cache_size_bytes != '' -%>
+druid.processing.columnCache.sizeBytes=<%= @processing_column_cache_size_bytes %>
+<% end -%>
 # Peon Configs
 <% @fork_properties.each do |k, v| -%>
 druid.indexer.fork.property.<%= k %>=<%= v %>
