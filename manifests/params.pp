@@ -180,7 +180,6 @@ class druid::params() {
   $middle_manager_peon_mode                           = 'remote'
   $middle_manager_processing_buffer_size_bytes        = 1073741824
   $middle_manager_processing_column_cache_size_bytes  = 0
-  $broker_processing_format_string                    = 'processing-%s'
   $middle_manager_remote_peon_max_retry_count         = 10
   $middle_manager_remote_peon_max_wait                = 'PT10M'
   $middle_manager_remote_peon_min_wait                = 'PT1M'
