@@ -175,6 +175,8 @@ class druid::indexing::middle_manager (
   $fork_properties                 = $druid::params::middle_manager_fork_properties,
   $jvm_opts                        = $druid::params::middle_manager_jvm_opts,
   $peon_mode                       = $druid::params::middle_manager_peon_mode,
+  $processing_buffer_size_bytes    = $druid::params::middle_manager_processing_buffer_size_bytes,
+  $processing_num_threads          = $druid::params::middle_manager_processing_num_threads,
   $remote_peon_max_retry_count     = $druid::params::middle_manager_remote_peon_max_retry_count,
   $remote_peon_max_wait            = $druid::params::middle_manager_remote_peon_max_wait,
   $remote_peon_min_wait            = $druid::params::middle_manager_remote_peon_min_wait,
