@@ -195,7 +195,7 @@ class druid::indexing::middle_manager (
   $worker_ip                       = $druid::params::middle_manager_worker_ip,
   $worker_version                  = $druid::params::middle_manager_worker_version,
 ) inherits druid::params {
-  require druid::indexing
+  #require druid::indexing
 
   validate_re($peon_mode, ['^local$', '^remote$'])
   validate_re($task_chat_handler_type, ['^noop$', '^announce$'])

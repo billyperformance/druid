@@ -12,30 +12,6 @@ druid.port=<%= @port %>
 druid.service=<%= @service %>
 <% end -%>
 
-# Task Logging
-druid.indexer.logs.type=<%= scope['druid::indexing::logs_type'] ? scope['druid::indexing::logs_type'] : 'file' %>
-<% if scope['druid::indexing::logs_type'] == 's3' -%>
-    <%- if scope['druid::indexing::s3_logs_bucket'] -%>
-druid.indexer.logs.s3Bucket=<%= scope['druid::indexing::s3_logs_bucket'] %>
-    <%- end -%>
-    <%- if scope['druid::indexing::s3_logs_prefix'] -%>
-druid.indexer.logs.s3Prefix=<%= scope['druid::indexing::s3_logs_prefix'] %>
-    <%- end -%>
-<% elsif scope['druid::indexing::logs_type'] == 'azure' -%>
-    <%- if scope['druid::indexing::azure_logs_container'] -%>
-druid.indexer.logs.containe=<%= scope['druid::indexing::azure_logs_container'] %>r
-    <%- end -%>
-    <%- if scope['druid::indexing::azure_logs_prefix'] -%>
-druid.indexer.logs.prefix=<%= scope['druid::indexing::azure_logs_prefix'] %>
-    <%- end -%>
-<% elsif scope['druid::indexing::logs_type'] == 'hdfs' -%>
-    <%- if scope['druid::indexing::hdfs_logs_directory'] -%>
-druid.indexer.logs.directory=<%= scope['druid::indexing::hdfs_logs_directory'] %>
-    <%- end -%>
-<% elsif scope['druid::indexing::local_logs_directory'] and scope['druid::indexing::local_logs_directory'] != '' -%>
-druid.indexer.logs.directory=<%= scope['druid::indexing::local_logs_directory'] %>
-<% end -%>
-
 # MiddleManager Service
 <% if @runner_allowed_prefixes and @runner_allowed_prefixes != '' -%>
 druid.indexer.runner.allowedPrefixes=["<%= @runner_allowed_prefixes.join('","') %>"]
