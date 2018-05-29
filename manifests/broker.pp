@@ -220,6 +220,11 @@
 #
 #   Default value: `10`.
 #
+# [*num_merge_buffers*]
+#   Number of merge buffers (needs to be > 0 for groupBy v2 engine).
+#
+#   Default value: `undef`.
+#
 # === Examples
 #
 #  class { 'druid::broker': }
@@ -291,6 +296,9 @@ class druid::broker (
   validate_integer($query_search_max_search_limit)
   validate_integer($retry_policy_num_tries)
   validate_integer($server_http_num_threads)
+  if ($num_merge_buffers != undef) {
+    validate_integer($num_merge_buffers)
+  }
 
   if ($processing_num_threads != undef) {
     validate_integer($processing_num_threads)

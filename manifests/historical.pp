@@ -170,6 +170,11 @@
 #     '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager'
 #   ]
 #
+# [*num_merge_buffers*]
+#   Number of merge buffers (needs to be > 0 for groupBy v2 engine).
+#
+#   Default value: `undef`.
+#
 # === Examples
 #
 #  class { 'druid::historical': }
@@ -205,6 +210,7 @@ class druid::historical (
   $populate_cache                          = $druid::params::historical_populate_cache,
   $uncacheable                             = $druid::params::historical_uncacheable,
   $jvm_opts                                = $druid::params::historical_jvm_opts,
+  $num_merge_buffers                       = $druid::params::historical_num_merge_buffers,
 ) inherits druid::params {
   require ::druid
 
@@ -230,6 +236,10 @@ class druid::historical (
 
   if ($processing_num_threads != undef) {
     validate_integer($processing_num_threads)
+  }
+
+  if ($num_merge_buffers != undef) {
+    validate_integer($num_merge_buffers)
   }
 
   validate_bool(

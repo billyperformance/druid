@@ -108,7 +108,7 @@ class druid::params() {
   $broker_select_tier                                 = 'highestPriority'
   $broker_server_http_max_idle_time                   = 'PT5m'
   $broker_server_http_num_threads                     = 10
-  $broker_num_merge_buffers                           = 1
+  $broker_num_merge_buffers                           = undef
   $coordinator_host                                   = $::ipaddress
   $coordinator_port                                   = 8081
   $coordinator_service                                = 'druid/coordinator'
@@ -166,6 +166,7 @@ class druid::params() {
   $historical_populate_cache                          = false
   $historical_uncacheable                             = ['groupBy', 'select']
   $historical_jvm_opts                                = ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']
+  $historical_num_merge_buffers                       = undef
   $indexing_azure_logs_container                      = undef
   $indexing_azure_logs_prefix                         = undef
   $indexing_hdfs_logs_directory                       = undef
@@ -200,6 +201,7 @@ class druid::params() {
   $middle_manager_worker_capacity                     = undef
   $middle_manager_worker_ip                           = 'localhost'
   $middle_manager_worker_version                      = '0'
+  $middle_manager_num_merge_buffers                   = undef
   $overlord_host                                      = $::ipaddress
   $overlord_port                                      = 8090
   $overlord_service                                   = 'druid/overlord'

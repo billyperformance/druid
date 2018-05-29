@@ -182,6 +182,11 @@
 #
 #   Default value: `'0'`.
 #
+# [*num_merge_buffers*]
+#   Number of merge buffers (needs to be > 0 for groupBy v2 engine).
+#
+#   Default value: `undef`.
+#
 # === Authors
 #
 # Tyler Yahn <codingalias@gmail.com>
@@ -215,6 +220,7 @@ class druid::indexing::middle_manager (
   $worker_capacity                 = $druid::params::middle_manager_worker_capacity,
   $worker_ip                       = $druid::params::middle_manager_worker_ip,
   $worker_version                  = $druid::params::middle_manager_worker_version,
+  $num_merge_buffers               = $druid::params::middle_manager_num_merge_buffers,
 ) inherits druid::params {
   #require druid::indexing
 
@@ -244,6 +250,9 @@ class druid::indexing::middle_manager (
   validate_integer($task_default_row_flush_boundary)
   if $worker_capacity {
     validate_integer($worker_capacity)
+  }
+  if ($num_merge_buffers != undef) {
+    validate_integer($num_merge_buffers)
   }
 
   validate_hash($fork_properties)
