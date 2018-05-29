@@ -43,6 +43,9 @@ druid.worker.version=<%= @worker_version %>
 <% if @worker_capacity and @worker_capacity != '' -%>
 druid.worker.capacity=<%= @worker_capacity %>
 <% end -%>
+<% if @server_http_num_threads and @server_http_num_threads != '' -%>
+druid.server.http.numThreads=<%= @server_http_num_threads %>
+<% end -%>
 
 # Processing
 <% if @processing_buffer_size_bytes and @processing_buffer_size_bytes != '' -%>

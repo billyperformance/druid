@@ -202,6 +202,7 @@ class druid::params() {
   $middle_manager_worker_ip                           = 'localhost'
   $middle_manager_worker_version                      = '0'
   $middle_manager_num_merge_buffers                   = undef
+  $middle_manager_server_http_num_threads             = 10
   $overlord_host                                      = $::ipaddress
   $overlord_port                                      = 8090
   $overlord_service                                   = 'druid/overlord'

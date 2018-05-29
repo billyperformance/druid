@@ -187,6 +187,11 @@
 #
 #   Default value: `undef`.
 #
+# [*server_http_num_threads*]
+#   Number of threads for HTTP requests.
+#
+#   Default value: `10`.
+#
 # === Authors
 #
 # Tyler Yahn <codingalias@gmail.com>
@@ -221,6 +226,7 @@ class druid::indexing::middle_manager (
   $worker_ip                       = $druid::params::middle_manager_worker_ip,
   $worker_version                  = $druid::params::middle_manager_worker_version,
   $num_merge_buffers               = $druid::params::middle_manager_num_merge_buffers,
+  $server_http_num_threads         = $druid::params::middle_manager_server_http_num_threads,
 ) inherits druid::params {
   #require druid::indexing
 
@@ -254,6 +260,7 @@ class druid::indexing::middle_manager (
   if ($num_merge_buffers != undef) {
     validate_integer($num_merge_buffers)
   }
+  validate_integer($server_http_num_threads)
 
   validate_hash($fork_properties)
 
