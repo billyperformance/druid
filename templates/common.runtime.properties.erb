@@ -243,6 +243,11 @@ druid.cache.memcachedPrefix=<%= @cache_memcached_prefix %>
 druid.selectors.indexing.serviceName=<%= @selectors_indexing_service_name %>
 <% end -%>
 
+# Coordinator Service Discovery
+<% if @selectors_coordinator_service_name and @selectors_coordinator_service_name != '' -%>
+druid.selectors.coordinator.serviceName=<%= @selectors_coordinator_service_name %>
+<% end -%>
+
 # Logging
 # #
 #
