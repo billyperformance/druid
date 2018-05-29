@@ -371,6 +371,12 @@
 # 
 #   Defaults to `'druid/overlord'`.
 # 
+# [*selectors_coordinator_service_name*]
+#   The service name of the coordinator service node. To start the
+#   coordinator with a different name, set it with this property.
+# 
+#   Defaults to `'druid/coordinator'`.
+# 
 # [*announcer_type*]
 #   The type of data segment announcer to use.
 # 
@@ -478,6 +484,7 @@ class druid (
   $cache_max_object_size                    = $druid::params::cache_max_object_size,
   $cache_memcached_prefix                   = $druid::params::cache_memcached_prefix,
   $selectors_indexing_service_name          = $druid::params::selectors_indexing_service_name,
+  $selectors_coordinator_service_name       = $druid::params::selectors_coordinator_service_name,
   $announcer_type                           = $druid::params::announcer_type,
   $announcer_segments_per_node              = $druid::params::announcer_segments_per_node,
   $announcer_max_bytes_per_node             = $druid::params::announcer_max_bytes_per_node,
@@ -533,6 +540,7 @@ class druid (
     $cache_uncacheable,
     $cache_memcached_prefix,
     $selectors_indexing_service_name,
+    $selectors_coordinator_service_name,
     $azure_logs_container,
     $azure_logs_prefix,
     $hdfs_logs_directory,

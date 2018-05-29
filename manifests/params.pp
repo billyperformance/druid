@@ -73,6 +73,7 @@ class druid::params() {
   $cache_max_object_size                              = 52428800
   $cache_memcached_prefix                             = 'druid'
   $selectors_indexing_service_name                    = 'druid/overlord'
+  $selectors_coordinator_service_name                 = 'druid/coordinator'
   $announcer_type                                     = 'batch'
   $announcer_segments_per_node                        = 50
   $announcer_max_bytes_per_node                       = 524288
