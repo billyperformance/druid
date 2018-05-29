@@ -105,10 +105,12 @@
 #  Defaults to 'processing-%s'.
 #
 # [*processing_num_threads*]
-#  The number of processing threads to have available for parallel processing
-#  of segments. Our rule of thumb is num_cores - 1, which means that even
-#  under heavy load there will still be one core available to do background
-#  tasks like talking with ZooKeeper and pulling down segments.
+#  Number of processing threads available for processing of segments.
+#
+#  Rule of thumb is num_cores - 1, which means that even under heavy load
+#  there will still be one core available to do background tasks like
+#  talking with ZooKeeper and pulling down segments. If only one core is
+#  available, this property defaults to the value 1.
 #
 # [*processing_column_cache_size_bytes*]
 #  Maximum size in bytes for the dimension value lookup cache. Any value
@@ -168,6 +170,11 @@
 #     '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager'
 #   ]
 #
+# [*num_merge_buffers*]
+#   Number of merge buffers (needs to be > 0 for groupBy v2 engine).
+#
+#   Default value: `undef`.
+#
 # === Examples
 #
 #  class { 'druid::historical': }
@@ -203,6 +210,7 @@ class druid::historical (
   $populate_cache                          = $druid::params::historical_populate_cache,
   $uncacheable                             = $druid::params::historical_uncacheable,
   $jvm_opts                                = $druid::params::historical_jvm_opts,
+  $num_merge_buffers                       = $druid::params::historical_num_merge_buffers,
 ) inherits druid::params {
   require ::druid
 
@@ -228,6 +236,10 @@ class druid::historical (
 
   if ($processing_num_threads != undef) {
     validate_integer($processing_num_threads)
+  }
+
+  if ($num_merge_buffers != undef) {
+    validate_integer($num_merge_buffers)
   }
 
   validate_bool(

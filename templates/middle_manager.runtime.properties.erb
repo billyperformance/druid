@@ -43,6 +43,9 @@ druid.worker.version=<%= @worker_version %>
 <% if @worker_capacity and @worker_capacity != '' -%>
 druid.worker.capacity=<%= @worker_capacity %>
 <% end -%>
+<% if @server_http_num_threads and @server_http_num_threads != '' -%>
+druid.server.http.numThreads=<%= @server_http_num_threads %>
+<% end -%>
 
 # Processing
 <% if @processing_buffer_size_bytes and @processing_buffer_size_bytes != '' -%>
@@ -53,9 +56,6 @@ druid.processing.formatString=<%= @processing_format_string %>
 <% end -%>
 <% if @processing_num_threads and @processing_num_threads != '' -%>
 druid.processing.numThreads=<%= @processing_num_threads %>
-<% end -%>
-<% if @processing_column_cache_size_bytes and @processing_column_cache_size_bytes != '' -%>
-druid.processing.columnCache.sizeBytes=<%= @processing_column_cache_size_bytes %>
 <% end -%>
 # Peon Configs
 <% @fork_properties.each do |k, v| -%>
@@ -94,4 +94,9 @@ druid.peon.taskActionClient.retry.maxWait=<%= @remote_peon_max_wait %>
     <%- if @remote_peon_max_retry_count and @remote_peon_max_retry_count != '' -%>
 druid.peon.taskActionClient.retry.maxRetryCount=<%= @remote_peon_max_retry_count %>
     <%- end -%>
+<% end -%>
+
+# GroupBy Engine
+<% if @num_merge_buffers and @nun_merge_buffers != '' -%>
+druid.processing.numMergeBuffers=<%= @num_merge_buffers %>
 <% end -%>
