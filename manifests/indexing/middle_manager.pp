@@ -64,6 +64,25 @@
 #
 #   Default value: `'remote'`.
 #
+# [*processing_buffer_size_bytes*]
+#   Buffer size for the storage of intermediate results.
+#
+#   The computation engine in both the Historical and Realtime nodes will
+#   use a scratch buffer of this size to do all of their intermediate
+#   computations off-heap. Larger values allow for more aggregations in a
+#   single pass over the data while smaller values can require more passes
+#   depending on the query that is being executed.
+#
+#   Default value: `1073741824` (1GB).
+#
+# [*processing_num_threads*]
+#   Number of processing threads available for processing of segments.
+#
+#   Rule of thumb is num_cores - 1, which means that even under heavy load
+#   there will still be one core available to do background tasks like
+#   talking with ZooKeeper and pulling down segments. If only one core is
+#   available, this property defaults to the value 1.
+#
 # [*remote_peon_max_retry_count*]
 #   Max retries a remote peon makes communicating with the overlord.
 #
@@ -215,6 +234,10 @@ class druid::indexing::middle_manager (
   )
 
   validate_integer($port)
+  validate_integer($processing_buffer_size_bytes)
+  if ($processing_num_threads != undef) {
+    validate_integer($processing_num_threads)
+  }
   validate_integer($remote_peon_max_retry_count)
   validate_integer($runner_max_znode_bytes)
   validate_integer($runner_start_port)

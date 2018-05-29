@@ -180,7 +180,7 @@ class druid::params() {
   $middle_manager_jvm_opts                            = ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']
   $middle_manager_peon_mode                           = 'remote'
   $middle_manager_processing_buffer_size_bytes        = 1073741824
-  $middle_manager_processing_column_cache_size_bytes  = 0
+  $middle_manager_processing_num_threads              = undef
   $middle_manager_remote_peon_max_retry_count         = 10
   $middle_manager_remote_peon_max_wait                = 'PT10M'
   $middle_manager_remote_peon_min_wait                = 'PT1M'

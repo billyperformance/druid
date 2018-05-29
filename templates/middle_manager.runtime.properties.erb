@@ -54,9 +54,6 @@ druid.processing.formatString=<%= @processing_format_string %>
 <% if @processing_num_threads and @processing_num_threads != '' -%>
 druid.processing.numThreads=<%= @processing_num_threads %>
 <% end -%>
-<% if @processing_column_cache_size_bytes and @processing_column_cache_size_bytes != '' -%>
-druid.processing.columnCache.sizeBytes=<%= @processing_column_cache_size_bytes %>
-<% end -%>
 # Peon Configs
 <% @fork_properties.each do |k, v| -%>
 druid.indexer.fork.property.<%= k %>=<%= v %>

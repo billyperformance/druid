@@ -105,10 +105,12 @@
 #  Defaults to 'processing-%s'.
 #
 # [*processing_num_threads*]
-#  The number of processing threads to have available for parallel processing
-#  of segments. Our rule of thumb is num_cores - 1, which means that even
-#  under heavy load there will still be one core available to do background
-#  tasks like talking with ZooKeeper and pulling down segments.
+#  Number of processing threads available for processing of segments.
+#
+#  Rule of thumb is num_cores - 1, which means that even under heavy load
+#  there will still be one core available to do background tasks like
+#  talking with ZooKeeper and pulling down segments. If only one core is
+#  available, this property defaults to the value 1.
 #
 # [*processing_column_cache_size_bytes*]
 #  Maximum size in bytes for the dimension value lookup cache. Any value
