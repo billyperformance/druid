@@ -204,7 +204,7 @@ class druid::indexing::overlord (
   $storage_recently_finished_threshold = $druid::params::overlord_storage_recently_finished_threshold,
   $storage_type                        = $druid::params::overlord_storage_type,
 ) inherits druid::params {
-  #require druid::indexing
+  require druid
 
   validate_string(
     $host,

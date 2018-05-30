@@ -212,7 +212,7 @@ class druid::historical (
   $jvm_opts                                = $druid::params::historical_jvm_opts,
   $num_merge_buffers                       = $druid::params::historical_num_merge_buffers,
 ) inherits druid::params {
-  require ::druid
+  require druid
 
   validate_string(
     $service,

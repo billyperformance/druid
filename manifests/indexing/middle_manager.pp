@@ -228,7 +228,7 @@ class druid::indexing::middle_manager (
   $num_merge_buffers               = $druid::params::middle_manager_num_merge_buffers,
   $server_http_num_threads         = $druid::params::middle_manager_server_http_num_threads,
 ) inherits druid::params {
-  #require druid::indexing
+  require druid
 
   validate_re($peon_mode, ['^local$', '^remote$'])
   validate_re($task_chat_handler_type, ['^noop$', '^announce$'])
