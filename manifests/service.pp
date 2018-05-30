@@ -38,26 +38,30 @@ define druid::service (
     ensure  => file,
     content => $config_content,
     require => File["${druid::config_dir}/${service_name}"],
-    notify  => Exec["Reload systemd daemon for new ${service_name} service config"],
   }
 
   file { "${druid::config_dir}/${service_name}/common.runtime.properties":
-    ensure    => link,
-    require   => File["${druid::config_dir}/${service_name}"],
-    target    => "${druid::config_dir}/common.runtime.properties",
-    subscribe => File["${druid::config_dir}/common.runtime.properties"],
-    notify    => Exec["Reload systemd daemon for new ${service_name} service config"],
+    ensure  => link,
+    target  => "${druid::config_dir}/common.runtime.properties",
+    require => [
+      File["${druid::config_dir}/${service_name}"],
+      File["${druid::config_dir}/common.runtime.properties"],
+    ],
   }
 
   file { "/etc/systemd/system/druid-${service_name}.service":
     ensure  => file,
     content => $service_content,
-    notify  => Exec["Reload systemd daemon for new ${service_name} service config"],
   }
 
   exec { "Reload systemd daemon for new ${service_name} service config":
     command     => '/bin/systemctl daemon-reload',
     refreshonly => true,
+    subscribe   => [
+      File["${druid::config_dir}/${service_name}/runtime.properties"],
+      File["${druid::config_dir}/common.runtime.properties"],
+      File["/etc/systemd/system/druid-${service_name}.service"],
+    ]
   }
 
   service { "druid-${service_name}":
