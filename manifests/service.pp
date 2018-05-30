@@ -42,13 +42,11 @@ define druid::service (
   }
 
   file { "${druid::config_dir}/${service_name}/common.runtime.properties":
-    ensure  => link,
-    target  => "${druid::config_dir}/common.runtime.properties",
-    require => [
-      File["${druid::config_dir}/${service_name}"],
-      File["${druid::config_dir}/common.runtime.properties"],
-    ],
-    notify  => Exec["Reload systemd daemon for new ${service_name} service config"],
+    ensure    => link,
+    require   => File["${druid::config_dir}/${service_name}"],
+    target    => "${druid::config_dir}/common.runtime.properties",
+    subscribe => File["${druid::config_dir}/common.runtime.properties"],
+    notify    => Exec["Reload systemd daemon for new ${service_name} service config"],
   }
 
   file { "/etc/systemd/system/druid-${service_name}.service":
