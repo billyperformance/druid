@@ -24,6 +24,18 @@
 #
 #   Defaults to '/etc/druid'.
 #
+# [*extra_classpaths*]
+#   Additional classpaths that will be exposed to the java start command
+#   of all druid services.
+#
+#   Defaults to '/etc/druid'.
+#
+# [*syslog_facility*]
+#   Syslog facility that will be used by systemd when logging output
+#   of any of the druid services.
+#
+#   Defaults to 'daemon'.
+#
 # [*extensions_remote_repositories*]
 #   Array of remote repositories to load dependencies from.
 # 
@@ -413,6 +425,7 @@ class druid (
   $install_dir                              = $druid::params::install_dir,
   $config_dir                               = $druid::params::config_dir,
   $extra_classpaths                         = $druid::params::extra_classpaths,
+  $syslog_facility                          = $druid::params::syslog_facility,
   $extensions_remote_repositories           = $druid::params::extensions_remote_repositories,
   $extensions_local_repository              = $druid::params::extensions_local_repository,
   $extensions_coordinates                   = $druid::params::extensions_coordinates,
@@ -580,6 +593,10 @@ class druid (
 
   validate_absolute_path($install_dir, $config_dir, $storage_directory)
 
+  validate_re($syslog_facility, [
+    'daemon', 'user', 'local0', 'local1', 'local2',
+    'local3', 'local4', 'local5', 'local6', 'local7'
+  ])
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
   validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$'])
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
