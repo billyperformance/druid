@@ -3,6 +3,9 @@ Description=Druid Realtime Node
 
 [Service]
 Type=simple
+StandardOutput=syslog
+StandardError=syslog
+SyslogFacility=<%= scope.lookupvar("::#{@module_name}::syslog_facility") %>
 WorkingDirectory=<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/
 ExecStart=/usr/bin/java <%= @jvm_opts.join(' ') %> -classpath .:/etc/druid/realtime/:<%= scope.lookupvar("::#{@module_name}::extra_classpaths") %>:<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid/lib/* io.druid.cli.Main server realtime
 SuccessExitStatus=130 143
