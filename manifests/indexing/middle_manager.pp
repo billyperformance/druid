@@ -274,6 +274,12 @@ class druid::indexing::middle_manager (
   validate_absolute_path($task_base_task_dir)
   validate_absolute_path($task_hadoop_working_path)
 
+  # this directory can be used as the java.io.tmpdir for runner_java_opts if task_base_task_dir is in a separate partition with plenty of space
+  file { "${task_base_task_dir}/tmp":
+    ensure  => directory,
+    before  => Service['druid-middle_manager'],
+  }
+
   druid::service { 'middle_manager':
     config_content  => template("${module_name}/middle_manager.runtime.properties.erb"),
     service_content => template("${module_name}/druid-middle_manager.service.erb"),
