@@ -1,3 +1,4 @@
+<% require 'json' -%>
 # This file is managed by Puppet
 # MODIFICATION WILL BE OVERWRITTEN
 
@@ -116,6 +117,22 @@ druid.emitter.http.flushCount=<%= @emitter_http_flush_count %>
     <%- end -%>
     <%- if @emitter_http_recipient_base_url and @emitter_http_recipient_base_url != '' -%>
 druid.emitter.http.recipientBaseUrl=<%= @emitter_http_recipient_base_url %>
+    <%- end -%>
+<% elsif @emitter == 'graphite' -%>
+    <%- if @emitter_graphite_hostname and @emitter_graphite_hostname != '' -%>
+druid.emitter.graphite.hostname=<%= @emitter_graphite_hostname %>
+    <%- end -%>
+    <%- if @emitter_graphite_port and @emitter_graphite_port != '' -%>
+druid.emitter.graphite.port=<%= @emitter_graphite_port %>
+    <%- end -%>
+    <%- if @emitter_graphite_batchSize and @emitter_graphite_batchSize != '' -%>
+druid.emitter.graphite.batchSize=<%= @emitter_graphite_batchSize %>
+    <%- end -%>
+    <%- if @emitter_graphite_eventConverter and @emitter_graphite_eventConverter != '' -%>
+druid.emitter.graphite.eventConverter=<%= @emitter_graphite_eventConverter.to_json %>
+    <%- end -%>
+    <%- if @emitter_graphite_flushPeriod and @emitter_graphite_flushPeriod != '' -%>
+druid.emitter.graphite.flushPeriod=<%= @emitter_graphite_flushPeriod %>
     <%- end -%>
 <% end -%>
 
