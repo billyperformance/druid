@@ -91,7 +91,7 @@ druid.request.logging.feed=<%= @request_logging_feed %>
 druid.monitoring.emissionPeriod=<%= @monitoring_emission_period %>
 <% end -%>
 <% if @monitoring_monitors and @monitoring_monitors != [] and @monitoring_monitors != '' -%>
-druid.monitoring.monitors=["<% @monitoring_monitors.join('", "') %>"]
+druid.monitoring.monitors=["<%= @monitoring_monitors.join('", "') %>"]
 <% end -%>
 
 # Emitting Metrics
