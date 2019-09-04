@@ -656,7 +656,7 @@ class druid (
     validate_string($emitter_graphite_hostname)
     validate_integer($emitter_graphite_port)
     validate_integer($emitter_graphite_batchSize)
-    validate_string($emitter_graphite_eventConverter) # ToDo should validate that this is a JSON (erb template executes to_json with this object)
+    validate_hash($emitter_graphite_eventConverter)
     validate_integer($emitter_graphite_flushPeriod)
   }
 
