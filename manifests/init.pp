@@ -174,7 +174,7 @@
 # [*emitter*]
 #   Emitter module to use.
 # 
-#   Valid values are: `'noop'`, `'logging'`, or `'http'`.
+#   Valid values are: `'noop'`, `'logging'`, `'http'` or `'graphite'`.
 # 
 #   Defaults to `'logging'`.
 # 
@@ -214,6 +214,36 @@
 #   the HTTP endpoint specified by this property.
 # 
 #   Defaults to `''`.
+# 
+# [*emitter_graphite_hostname*]
+#   The hostname of the graphite server.
+#   Only applies if emitter is set to `'graphite'`
+# 
+#   Defaults to `undef`.
+# 
+# [*emitter_graphite_port*]
+#   The port of the graphite server.
+#   Only applies if emitter is set to `'graphite'`
+# 
+#   Defaults to `undef`.
+# 
+# [*emitter_graphite_batchSize*]
+#   Number of events to send as one batch.
+#   Only applies if emitter is set to `'graphite'`
+# 
+#   Defaults to `100`.
+# 
+# [*emitter_graphite_eventConverter*]
+#   Filter and converter of druid events to graphite event. Must be a key-value object, as it will be printed as JSON.
+#   Only applies if emitter is set to `'graphite'`
+# 
+#   Defaults to `undef`.
+# 
+# [*emitter_graphite_flushPeriod*]
+#   Queue flushing period in milliseconds.
+#   Only applies if emitter is set to `'graphite'`
+# 
+#   Defaults to `60000` (1 minute).
 # 
 # [*metadata_storage_type*]
 #   The type of metadata storage to use.
@@ -461,6 +491,11 @@ class druid (
   $emitter_http_flush_millis                = $druid::params::emitter_http_flush_millis,
   $emitter_http_flush_count                 = $druid::params::emitter_http_flush_count,
   $emitter_http_recipient_base_url          = $druid::params::emitter_http_recipient_base_url,
+  $emitter_graphite_hostname                = $druid::params::emitter_graphite_hostname,
+  $emitter_graphite_port                    = $druid::params::emitter_graphite_port,
+  $emitter_graphite_batchSize               = $druid::params::emitter_graphite_batchSize,
+  $emitter_graphite_eventConverter          = $druid::params::emitter_graphite_eventConverter,
+  $emitter_graphite_flushPeriod             = $druid::params::emitter_graphite_flushPeriod,
   $metadata_storage_type                    = $druid::params::metadata_storage_type,
   $metadata_storage_connector_uri           = $druid::params::metadata_storage_connector_uri,
   $metadata_storage_connector_user          = $druid::params::metadata_storage_connector_user,
@@ -614,6 +649,16 @@ class druid (
     '^warn$',
     '^erro$',
   ])
+
+  validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
+
+  if $emitter == 'graphite' {
+    validate_string($emitter_graphite_hostname)
+    validate_integer($emitter_graphite_port)
+    validate_integer($emitter_graphite_batchSize)
+    validate_hash($emitter_graphite_eventConverter)
+    validate_integer($emitter_graphite_flushPeriod)
+  }
 
   if $install_java {
     require ::oracle_java

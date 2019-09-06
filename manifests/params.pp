@@ -38,6 +38,11 @@ class druid::params() {
   $emitter_http_flush_millis                          = 60000
   $emitter_http_flush_count                           = 500
   $emitter_http_recipient_base_url                    = ''
+  $emitter_graphite_hostname                          = undef
+  $emitter_graphite_port                              = undef
+  $emitter_graphite_batchSize                         = 100
+  $emitter_graphite_eventConverter                    = undef
+  $emitter_graphite_flushPeriod                       = 60000
   $metadata_storage_type                              = 'mysql'
   $metadata_storage_connector_uri                     = 'jdbc:mysql://localhost:3306/druid?characterEncoding=UTF-8'
   $metadata_storage_connector_user                    = 'druid'
