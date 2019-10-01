@@ -451,7 +451,7 @@
 #
 class druid (
   $version                                  = $druid::params::version,
-  $nstall_java                              = $druid::params::install_java,
+  $install_java                             = $druid::params::install_java,
   $install_dir                              = $druid::params::install_dir,
   $config_dir                               = $druid::params::config_dir,
   $extra_classpaths                         = $druid::params::extra_classpaths,
