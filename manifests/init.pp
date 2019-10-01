@@ -665,23 +665,29 @@ class druid (
   }
 
   if $use_apache_install_repo {
-    $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/apache-druid-${version}-incubating-bin.tar.gz"
+    $release_name = "apache-druid-${version}-incubating"
   } else {
-    $url = "http://static.druid.io/artifacts/releases/druid-${version}-bin.tar.gz"
+    $release_name = "druid-${version}"
   }
 
-  archive { "/var/tmp/druid-${version}-bin.tar.gz":
+  if $use_apache_install_repo {
+    $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/${release_name}-bin.tar.gz"
+  } else {
+    $url = "http://static.druid.io/artifacts/releases/${release_name}-bin.tar.gz"
+  }
+
+  archive { "/var/tmp/${release_name}-bin.tar.gz":
     ensure          => present,
     extract         => true,
     extract_path    => $install_dir,
     source          => $url,
     checksum_verify => false,
-    creates         => "${install_dir}/druid-${version}",
+    creates         => "${install_dir}/${release_name}",
     cleanup         => true,
   }
   -> file { "${install_dir}/druid":
     ensure  => link,
-    target  => "${install_dir}/druid-${version}",
+    target  => "${install_dir}/${release_name}",
   }
 
   file { $config_dir:
