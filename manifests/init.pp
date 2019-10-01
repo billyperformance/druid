@@ -9,10 +9,10 @@
 #
 #   Defaults to '0.8.1'.
 #
-# [*java_pkg*]
-#   Name of the java package to ensure installed on system.
+# [*use_apache_install_repo*]
+#   Whether to use the apache repository for downloading the install package (required for Druid >= 0.13.0)
 #
-#   Defaults to 'openjdk-7-jre-headless'.
+#   Defaults to `false`.
 #
 # [*install_dir*]
 #   Directory druid will be installed in.
@@ -438,9 +438,8 @@
 #
 # === Examples
 #
-#  class { 'druid': 
+#  class { 'druid':
 #    version     => '0.8.0',
-#    java_pkg    => 'openjdk-7-jre-headless',
 #    install_dir => '/usr/local/lib',
 #    config_dir  => '/etc/druid',
 #  }
@@ -451,6 +450,7 @@
 #
 class druid (
   $version                                  = $druid::params::version,
+  $use_apache_install_repo                  = $druid::params::use_apache_install_repo,
   $install_java                             = $druid::params::install_java,
   $install_dir                              = $druid::params::install_dir,
   $config_dir                               = $druid::params::config_dir,
@@ -664,7 +664,12 @@ class druid (
     require ::oracle_java
   }
 
-  $url = "http://static.druid.io/artifacts/releases/druid-${version}-bin.tar.gz"
+  if $use_apache_install_repo {
+    $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/apache-druid-${version}-incubating-bin.tar.gz"
+  } else {
+    $url = "http://static.druid.io/artifacts/releases/druid-${version}-bin.tar.gz"
+  }
+
   archive { "/var/tmp/druid-${version}-bin.tar.gz":
     ensure          => present,
     extract         => true,
