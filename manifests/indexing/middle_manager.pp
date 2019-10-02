@@ -37,7 +37,7 @@
 #
 #   ```puppet
 #     {
-#       "druid.monitoring.monitors" => "[\"com.metamx.metrics.JvmMonitor\"]",
+#       "druid.monitoring.monitors" => "[\"org.apache.druid.java.util.metrics.JvmMonitor\"]",
 #       "druid.processing.numThreads" => 2,
 #     }
 #   ```
@@ -101,7 +101,7 @@
 # [*runner_allowed_prefixes*]
 #   Array of prefixes of configs that are passed down to peons.
 #
-#   Default value: `['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']`.
+#   Default value: `['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
 #
 # [*runner_classpath*]
 #   Java classpath for the peons.

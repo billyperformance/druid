@@ -193,7 +193,7 @@ class druid::params() {
   $middle_manager_remote_peon_max_retry_count         = 10
   $middle_manager_remote_peon_max_wait                = 'PT10M'
   $middle_manager_remote_peon_min_wait                = 'PT1M'
-  $middle_manager_runner_allowed_prefixes             = ['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']
+  $middle_manager_runner_allowed_prefixes             = ['org.apache.druid.java.util', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
   $middle_manager_runner_classpath                    = undef
   $middle_manager_runner_compress_znodes              = true
   $middle_manager_runner_java_command                 = 'java'

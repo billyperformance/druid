@@ -468,11 +468,11 @@ Valid array values:
 
 | Array Value | Description |
 | --- | --- |
-| `'io.druid.client.cache.CacheMonitor'` | Emits metrics (to logs) about the segment results cache for Historical and Broker nodes. Reports typical cache statistics include hits, misses, rates, and size (bytes and number of entries), as well as timeouts and errors. |
-| `'com.metamx.metrics.SysMonitor'` | This uses the SIGAR library to report on various system activities and statuses. Make sure to add the sigar library jar to your classpath if using this monitor. |
-| `'io.druid.server.metrics.HistoricalMetricsMonitor'` | Reports statistics on Historical nodes. |
-| `'com.metamx.metrics.JvmMonitor'` | Reports JVM-related statistics. |
-| `'io.druid.segment.realtime.RealtimeMetricsMonitor'` | Reports statistics on Realtime nodes. |
+| `'org.apache.druid.client.cache.CacheMonitor'` | Emits metrics (to logs) about the segment results cache for Historical and Broker nodes. Reports typical cache statistics include hits, misses, rates, and size (bytes and number of entries), as well as timeouts and errors. |
+| `'org.apache.druid.java.util.metrics.SysMonitor'` | This uses the SIGAR library to report on various system activities and statuses. Make sure to add the sigar library jar to your classpath if using this monitor. |
+| `'org.apache.druid.server.metrics.HistoricalMetricsMonitor'` | Reports statistics on Historical nodes. |
+| `'org.apache.druid.java.util.metrics.JvmMonitor'` | Reports JVM-related statistics. |
+| `'org.apache.druid.segment.realtime.RealtimeMetricsMonitor'` | Reports statistics on Realtime nodes. |
 
 Default value: `[]`. 
 
@@ -1330,7 +1330,7 @@ Example:
 
 ```puppet
 {
-  "druid.monitoring.monitors" => "[\"com.metamx.metrics.JvmMonitor\"]",
+  "druid.monitoring.monitors" => "[\"org.apache.druid.java.util.metrics.JvmMonitor\"]",
   "druid.processing.numThreads" => 2,
 }
 ```
@@ -1376,7 +1376,7 @@ Default value: `'PT1M'`.
 
 Array of prefixes of configs that are passed down to peons.
 
-Default value: `['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']`.
+Default value: `['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
 
 ##### `druid::indexing::middle_manager::runner_classpath`
 

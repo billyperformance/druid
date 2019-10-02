@@ -83,7 +83,7 @@ class { 'kafka':
 }
 
 class { 'druid':
-  extensions_coordinates              => ["io.druid.extensions:druid-kafka-eight:0.8.0"],
+  extensions_coordinates              => ["org.apache.druid.extensions:druid-kafka-eight:0.8.0"],
   metadata_storage_type               => 'derby',
   metadata_storage_connector_uri      => '',
   metadata_storage_connector_user     => '',
