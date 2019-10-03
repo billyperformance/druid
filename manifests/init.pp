@@ -699,4 +699,10 @@ class druid (
     content => template("${module_name}/common.runtime.properties.erb"),
     require => File[$config_dir],
   }
+
+  file { "${config_dir}/log4j2.xml":
+    ensure  => file,
+    content => template("${module_name}/log4j2.xml.erb"),
+    require => File[$config_dir],
+  }
 }
