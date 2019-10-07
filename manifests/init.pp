@@ -633,7 +633,7 @@ class druid (
     'local3', 'local4', 'local5', 'local6', 'local7'
   ])
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
-  validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$'])
+  validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$', '^composing$', '^switching$'])
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
   validate_re($metadata_storage_type, ['mysql', 'postgres', 'derby'])
   validate_re($announcer_type, ['^lecagy$', '^batch$'])
