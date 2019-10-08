@@ -1,0 +1,52 @@
+# This file is managed by Puppet
+# MODIFICATION WILL BE OVERWRITTEN
+
+# Node Config
+<% if @host and @host != '' -%>
+druid.host=<%= @host %>
+<% end -%>
+<% if @plaintext_port and @plaintext_port != '' -%>
+druid.plaintextPort=<%= @plaintext_port %>
+<% end -%>
+<% if @service and @service != '' -%>
+druid.service=<%= @service %>
+<% end -%>
+
+# Router Configs
+
+<% if @default_broker_service_name and @default_broker_service_name != '' -%>
+druid.router.defaultBrokerServiceName=<%= @default_broker_service_name %>
+<% end -%>
+<% if @coordinator_service_name and @coordinator_service_name != '' -%>
+druid.router.coordinatorServiceName=<%= @coordinator_service_name %>
+<% end -%>
+<% if @default_rule and @default_rule != '' -%>
+druid.router.defaultRule=<%= @default_rule %>
+<% end -%>
+<% if @poll_period and @poll_period != '' -%>
+druid.router.pollPeriod=<%= @poll_period %>
+<% end -%>
+<% if @strategies and @strategies != '' -%>
+druid.router.strategies=<%= @strategies.to_json %>
+<% end -%>
+<% if @avatica_balancer_type and @avatica_balancer_type != '' -%>
+druid.router.avatica.balancer.type=<%= @avatica_balancer_type %>
+<% end -%>
+<% if @management_proxy_enabled and @management_proxy_enabled != '' -%>
+druid.router.managementProxy.enabled=<%= @management_proxy_enabled %>
+<% end -%>
+<% if @tier_to_broker_map and @tier_to_broker_map != '' -%>
+druid.router.tierToBrokerMap=<%= @tier_to_broker_map.to_json %>
+<% end -%>
+<% if @http_num_connections and @http_num_connections != '' -%>
+druid.router.http.numConnections=<%= @http_num_connections %>
+<% end -%>
+<% if @http_read_timeout and @http_read_timeout != '' -%>
+druid.router.http.readTimeout=<%= @http_read_timeout %>
+<% end -%>
+<% if @http_num_max_threads and @http_num_max_threads != '' -%>
+druid.router.http.numMaxThreads=<%= @http_num_max_threads %>
+<% end -%>
+<% if @server_http_num_threads and @server_http_num_threads != '' -%>
+druid.server.http.numThreads=<%= @server_http_num_threads %>
+<% end -%>
