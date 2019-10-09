@@ -138,7 +138,7 @@ class druid::params() {
   $router_jvm_opts                                    = ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']
   $router_default_broker_service_name                 = 'druid/broker'
   $router_coordinator_service_name                    = 'druid/coordinator'
-  $router_management_proxy_enabled                    = true
+  $router_management_proxy_enabled                    = false
   $router_tier_to_broker_map                          = { '_default_tier' => '' }
   $router_default_rule                                = '_default'
   $router_poll_period                                 = 'PT1M'
