@@ -139,10 +139,10 @@ class druid::params() {
   $router_default_broker_service_name                 = 'druid/broker'
   $router_coordinator_service_name                    = 'druid/coordinator'
   $router_management_proxy_enabled                    = false
-  $router_tier_to_broker_map                          = { '_default_tier' : '' }
+  $router_tier_to_broker_map                          = { '_default_tier' => '' }
   $router_default_rule                                = '_default'
   $router_poll_period                                 = 'PT1M'
-  $router_strategies                                  = [ { 'type':'timeBoundary' },{ 'type':'priority' } ]
+  $router_strategies                                  = [ { 'type'=>'timeBoundary' },{ 'type'=>'priority' } ]
   $router_avatica_balancer_type                       = 'rendezvousHash'
   $router_http_num_connections                        = 5
   $router_http_read_timeout                           = 'PT15M'
