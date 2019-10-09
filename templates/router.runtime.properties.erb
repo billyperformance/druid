@@ -32,7 +32,7 @@ druid.router.strategies=<%= @strategies.to_json %>
 <% if @avatica_balancer_type and @avatica_balancer_type != '' -%>
 druid.router.avatica.balancer.type=<%= @avatica_balancer_type %>
 <% end -%>
-<% if @management_proxy_enabled and @management_proxy_enabled != '' -%>
+<% if @management_proxy_enabled != '' -%>
 druid.router.managementProxy.enabled=<%= @management_proxy_enabled %>
 <% end -%>
 <% if @tier_to_broker_map and @tier_to_broker_map != '' -%>
