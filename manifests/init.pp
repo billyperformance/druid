@@ -686,15 +686,16 @@ class druid (
     cleanup         => true,
   }
 
+  exec { "Remove all default extensions in directory ${install_dir}/${release_name}/extensions/":
+    command     => "rm -rf ${install_dir}/${release_name}/extensions/*",
+    subscribe   => Archive["/var/tmp/${release_name}-bin.tar.gz"],
+    refreshonly => true,
+  }
+
   file { "${install_dir}/druid":
     ensure  => link,
     target  => "${install_dir}/${release_name}",
     require => Archive["/var/tmp/${release_name}-bin.tar.gz"],
-  }
-
-  exec { "Remove all default extensions in directory ${install_dir}/druid/extensions/":
-    command => "rm -rf ${install_dir}/druid/extensions/*",
-    require => File["${install_dir}/druid"],
   }
 
   file { $config_dir:
