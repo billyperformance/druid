@@ -689,7 +689,7 @@ class druid (
   file { "${install_dir}/druid":
     ensure  => link,
     target  => "${install_dir}/${release_name}",
-    require => File["/var/tmp/${release_name}-bin.tar.gz"],
+    require => Archive["/var/tmp/${release_name}-bin.tar.gz"],
   }
 
   exec { "Remove all default extensions in directory ${install_dir}/druid/extensions/":
