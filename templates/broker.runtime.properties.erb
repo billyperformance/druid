@@ -110,6 +110,6 @@ druid.processing.numMergeBuffers=<%= @num_merge_buffers %>
 <% end -%>
 
 # Druid SQL
-<% if @sql_enable != '' -%>
+<% if @sql_enable and @sql_enable != '' -%>
 druid.sql.enable=<%= @sql_enable %>
 <% end -%>

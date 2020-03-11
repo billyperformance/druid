@@ -33,15 +33,21 @@
 #   unvalidated.  The keys should NOT include
 #   `'druid.indexer.fork.property'` as a prefix.
 #
-#   Example:
+#   Example for druid >= 0.13.0:
 #
 #   ```puppet
 #     {
 #       "druid.monitoring.monitors" => "[\"org.apache.druid.java.util.metrics.JvmMonitor\"]",
 #       "druid.processing.numThreads" => 2,
 #     }
-#   ```
+#   ```#   Example for druid version older than 0.13:
 #
+#   ```puppet
+#     {
+#       "druid.monitoring.monitors" => "[\"com.metamx.metrics.JvmMonitor\"]",
+#       "druid.processing.numThreads" => 2,
+#     }
+#   ```
 #   Default value: `{}`
 #
 # [*jvm_opts*]
@@ -101,7 +107,7 @@
 # [*runner_allowed_prefixes*]
 #   Array of prefixes of configs that are passed down to peons.
 #
-#   Default value: `['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
+#   Default value: `['com.metamx', 'druid', 'io.druid', 'org.apache.druid.java.util.metrics', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
 #
 # [*runner_classpath*]
 #   Java classpath for the peons.

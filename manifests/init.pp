@@ -168,6 +168,14 @@
 #       Reports JVM-related statistics.
 #     `'org.apache.druid.segment.realtime.RealtimeMetricsMonitor'`:
 #       Reports statistics on Realtime nodes.
+#
+#   For druid older than 0.13 druid versions use the following instead
+#     `'io.druid.client.cache.CacheMonitor'`:
+#     `'io.druid.segment.realtime.RealtimeMetricsMonitor'`:
+#     `'com.metamx.metrics.JvmMonitor'`:
+#     `'io.druid.server.metrics.HistoricalMetricsMonitor'`:
+#     `'com.metamx.metrics.SysMonitor'`:
+#
 # 
 #   Defaults to `[]`.
 # 
@@ -456,6 +464,7 @@ class druid (
   $config_dir                               = $druid::params::config_dir,
   $extra_classpaths                         = $druid::params::extra_classpaths,
   $syslog_facility                          = $druid::params::syslog_facility,
+  $package_name                             = $druid::params::package_name,
   $extensions_remote_repositories           = $druid::params::extensions_remote_repositories,
   $extensions_local_repository              = $druid::params::extensions_local_repository,
   $extensions_coordinates                   = $druid::params::extensions_coordinates,

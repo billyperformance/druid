@@ -6,6 +6,7 @@ class druid::params() {
   $config_dir                                         = '/etc/druid'
   $extra_classpaths                                   = '/etc/druid'
   $syslog_facility                                    = 'daemon'
+  $package_name                                       = 'io.druid'
   $extensions_remote_repositories                     = ['http://repo1.maven.org/maven2/', 'https://metamx.artifactoryonline.com/metamx/pub-libs-releases-local']
   $extensions_local_repository                        = '~/.m2/repository'
   $extensions_coordinates                             = []
@@ -117,7 +118,7 @@ class druid::params() {
   $broker_server_http_max_idle_time                   = 'PT5m'
   $broker_server_http_num_threads                     = 10
   $broker_num_merge_buffers                           = undef
-  $broker_sql_enable                                  = false
+  $broker_sql_enable                                  = undef
   $coordinator_host                                   = $::ipaddress
   $coordinator_port                                   = 8081
   $coordinator_service                                = 'druid/coordinator'
@@ -194,7 +195,7 @@ class druid::params() {
   $middle_manager_remote_peon_max_retry_count         = 10
   $middle_manager_remote_peon_max_wait                = 'PT10M'
   $middle_manager_remote_peon_min_wait                = 'PT1M'
-  $middle_manager_runner_allowed_prefixes             = ['org.apache.druid.java.util', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
+  $middle_manager_runner_allowed_prefixes             = ['com.metamx', 'io.druid', 'org.apache.druid.java.util', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
   $middle_manager_runner_classpath                    = undef
   $middle_manager_runner_compress_znodes              = true
   $middle_manager_runner_java_command                 = 'java'

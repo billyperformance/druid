@@ -464,7 +464,7 @@ Default value: `'PT1m'`.
 
 Array of Druid monitors used by a node. See below for names and more information. 
 
-Valid array values:
+Valid array values for druid version >= 0.13.0:
 
 | Array Value | Description |
 | --- | --- |
@@ -473,6 +473,16 @@ Valid array values:
 | `'org.apache.druid.server.metrics.HistoricalMetricsMonitor'` | Reports statistics on Historical nodes. |
 | `'org.apache.druid.java.util.metrics.JvmMonitor'` | Reports JVM-related statistics. |
 | `'org.apache.druid.segment.realtime.RealtimeMetricsMonitor'` | Reports statistics on Realtime nodes. |
+
+Valid array values for druid version older than 0.13:
+
+| Array Value | Description |
+| --- | --- |
+| `'io.druid.client.cache.CacheMonitor'` | Emits metrics (to logs) about the segment results cache for Historical and Broker nodes. Reports typical cache statistics include hits, misses, rates, and size (bytes and number of entries), as well as timeouts and errors. |
+| `'com.metamx.metrics.SysMonitor'` | This uses the SIGAR library to report on various system activities and statuses. Make sure to add the sigar library jar to your classpath if using this monitor. |
+| `'io.druid.server.metrics.HistoricalMetricsMonitor'` | Reports statistics on Historical nodes. |
+| `'com.metamx.metrics.JvmMonitor'` | Reports JVM-related statistics. |
+| `'io.druid.segment.realtime.RealtimeMetricsMonitor'` | Reports statistics on Realtime nodes. |
 
 Default value: `[]`. 
 
@@ -1326,7 +1336,7 @@ Peons inherit the configurations of their parent middle managers, but if this is
 
 These key value pairs are expected in Druid config format and are unvalidated.  The keys should NOT include `'druid.indexer.fork.property'` as a prefix.
 
-Example:
+Example for druid version >= 0.13.0:
 
 ```puppet
 {
@@ -1334,6 +1344,15 @@ Example:
   "druid.processing.numThreads" => 2,
 }
 ```
+
+Example for druid version older than 0.13
+```puppet
+{
+  "druid.monitoring.monitors" => "[\"com.metamx.metrics.JvmMonitor\"]",
+  "druid.processing.numThreads" => 2,
+}
+```
+
 
 Default value: `{}`
 
@@ -1376,6 +1395,10 @@ Default value: `'PT1M'`.
 
 Array of prefixes of configs that are passed down to peons.
 
+Example for druid version >= 0.13.0:
+Default value: `['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']`.
+
+Example for druid version older than 0.13
 Default value: `['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
 
 ##### `druid::indexing::middle_manager::runner_classpath`
