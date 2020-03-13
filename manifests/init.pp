@@ -660,6 +660,7 @@ class druid (
   ])
 
   validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
+  validate_string($package_name)
 
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)
@@ -673,13 +674,13 @@ class druid (
     require ::oracle_java
   }
 
-  if $use_apache_install_repo {
+  if $package_name != 'io.druid' {
     $release_name = "apache-druid-${version}-incubating"
   } else {
     $release_name = "druid-${version}"
   }
 
-  if $use_apache_install_repo {
+  if $package_name != 'io.druid' {
     $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/${release_name}-bin.tar.gz"
   } else {
     $url = "http://static.druid.io/artifacts/releases/${release_name}-bin.tar.gz"
