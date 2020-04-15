@@ -9,11 +9,6 @@
 #
 #   Defaults to '0.8.1'.
 #
-# [*use_apache_install_repo*]
-#   Whether to use the apache repository for downloading the install package (required for Druid >= 0.13.0)
-#
-#   Defaults to `false`.
-#
 # [*install_dir*]
 #   Directory druid will be installed in.
 #
@@ -458,7 +453,6 @@
 #
 class druid (
   $version                                  = $druid::params::version,
-  $use_apache_install_repo                  = $druid::params::use_apache_install_repo,
   $install_java                             = $druid::params::install_java,
   $install_dir                              = $druid::params::install_dir,
   $config_dir                               = $druid::params::config_dir,
@@ -660,7 +654,7 @@ class druid (
   ])
 
   validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
-  validate_string($package_name)
+  validate_re($package_name, ['io.druid', 'apache'])
 
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)
@@ -674,15 +668,11 @@ class druid (
     require ::oracle_java
   }
 
-  if $package_name != 'io.druid' {
+  if $package_name == 'apache' {
     $release_name = "apache-druid-${version}-incubating"
-  } else {
-    $release_name = "druid-${version}"
-  }
-
-  if $package_name != 'io.druid' {
     $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/${release_name}-bin.tar.gz"
   } else {
+    $release_name = "druid-${version}"
     $url = "http://static.druid.io/artifacts/releases/${release_name}-bin.tar.gz"
   }
 

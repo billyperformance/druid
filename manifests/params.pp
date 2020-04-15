@@ -1,6 +1,5 @@
 class druid::params() {
   $version                                            = '0.9.2'
-  $use_apache_install_repo                            = false
   $install_dir                                        = '/opt'
   $install_java                                       = true
   $config_dir                                         = '/etc/druid'
