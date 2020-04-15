@@ -43,6 +43,6 @@ end
 
 def druid_cli(command, opts = '', exit_codes = [0], &block)
   classpath = ":/etc/druid/:/usr/local/lib/druid/lib/*"
-  cmd = "/usr/bin/java #{opts} -classpath #{classpath} org.apache.druid.cli.Main #{command}"
+  cmd = "/usr/bin/java #{opts} -classpath #{classpath} io.druid.cli.Main #{command}"
   shell(cmd, :acceptable_exit_codes => exit_codes, &block)
 end

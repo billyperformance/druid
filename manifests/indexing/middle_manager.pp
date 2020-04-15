@@ -37,7 +37,7 @@
 #
 #   ```puppet
 #     {
-#       "druid.monitoring.monitors" => "[\"org.apache.druid.java.util.metrics.JvmMonitor\"]",
+#       "druid.monitoring.monitors" => "[\"io.druid.java.util.metrics.JvmMonitor\"]",
 #       "druid.processing.numThreads" => 2,
 #     }
 #   ```#   Example for druid version older than 0.13:
@@ -103,11 +103,6 @@
 #   Min retry time a remote peon makes communicating with the overlord.
 #
 #   Default value: `'PT1M'`.
-#
-# [*runner_allowed_prefixes*]
-#   Array of prefixes of configs that are passed down to peons.
-#
-#   Default value: `['com.metamx', 'druid', 'io.druid', 'org.apache.druid.java.util.metrics', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
 #
 # [*runner_classpath*]
 #   Java classpath for the peons.
@@ -215,7 +210,6 @@ class druid::indexing::middle_manager (
   $remote_peon_max_retry_count     = $druid::params::middle_manager_remote_peon_max_retry_count,
   $remote_peon_max_wait            = $druid::params::middle_manager_remote_peon_max_wait,
   $remote_peon_min_wait            = $druid::params::middle_manager_remote_peon_min_wait,
-  $runner_allowed_prefixes         = $druid::params::middle_manager_runner_allowed_prefixes,
   $runner_classpath                = $druid::params::middle_manager_runner_classpath,
   $runner_compress_znodes          = $druid::params::middle_manager_runner_compress_znodes,
   $runner_java_command             = $druid::params::middle_manager_runner_java_command,
@@ -279,6 +273,12 @@ class druid::indexing::middle_manager (
   validate_absolute_path($task_base_dir)
   validate_absolute_path($task_base_task_dir)
   validate_absolute_path($task_hadoop_working_path)
+
+  if $druid::package_name == 'org.apache.druid' {
+    $middle_manager_runner_allowed_prefixes = "['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']"
+  } else {
+    $middle_manager_runner_allowed_prefixes = "['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']"
+  }
 
   exec { "Create task base task directory with tmp":
     # this tmp directory can be used as the java.io.tmpdir for runner_java_opts if task_base_task_dir is in a separate partition with plenty of space

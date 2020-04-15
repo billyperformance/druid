@@ -1,8 +1,8 @@
 class { 'druid':
   extensions_coordinates              => [
-    'org.apache.druid.extensions:druid-s3-extensions',
-    'org.apache.druid.extensions:druid-histogram',
-    'org.apache.druid.extensions:mysql-metadata-storag',
+    'io.druid.extensions:druid-s3-extensions',
+    'io.druid.extensions:druid-histogram',
+    'io.druid.extensions:mysql-metadata-storag',
   ],
   extensions_default_version          => '0.8.0',
   zk_paths_properties_path            => 'test_prop',
