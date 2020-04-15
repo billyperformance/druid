@@ -654,7 +654,7 @@ class druid (
   ])
 
   validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
-  validate_re($package_name, ['io.druid', 'apache'])
+  validate_re($package_name, ['io.druid', 'org.apache.druid'])
 
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)
@@ -668,7 +668,7 @@ class druid (
     require ::oracle_java
   }
 
-  if $package_name == 'apache' {
+  if $package_name == 'org.apache.druid' {
     $release_name = "apache-druid-${version}-incubating"
     $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/${release_name}-bin.tar.gz"
   } else {
