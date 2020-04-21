@@ -9,6 +9,8 @@ class druid::params() {
   $extensions_remote_repositories                     = ['http://repo1.maven.org/maven2/', 'https://metamx.artifactoryonline.com/metamx/pub-libs-releases-local']
   $extensions_local_repository                        = '~/.m2/repository'
   $extensions_coordinates                             = []
+  $extensions_hadoop_deps_dir                         = '/opt/druid/hadoop-dependencies'
+  $extensions_loadlist                                = []
   $extensions_default_version                         = undef
   $extensions_search_current_classloader              = true
   $log_properties                                     = true

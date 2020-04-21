@@ -1,6 +1,16 @@
 require 'spec_helper'
 describe 'druid::broker', :type => 'class' do
   context 'On base system with defaults for all parameters' do
+    let(:facts) do
+      {
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
+      }
+    end
+
     it {
       should compile.with_all_deps
       should contain_class('druid::broker')
@@ -9,12 +19,22 @@ describe 'druid::broker', :type => 'class' do
       should contain_file('/etc/druid/broker/common.runtime.properties')
       should contain_file('/etc/druid/broker/runtime.properties')
       should contain_file('/etc/systemd/system/druid-broker.service')
-      should contain_exec('Reload systemd daemon for new broker service file')
+      should contain_exec('Reload systemd daemon for new broker service config')
       should contain_service('druid-broker')
     }
   end
 
   context 'On base system with custom JVM parameters ' do
+    let(:facts) do
+      {
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
+      }
+    end
+
     let(:params) do
       {
         :jvm_opts => [
@@ -41,6 +61,16 @@ describe 'druid::broker', :type => 'class' do
   end
 
   context 'On base system with all custom parameters.' do
+    let(:facts) do
+      {
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
+      }
+    end
+
     let(:params) do
       {
         :host                                 => '192.168.0.100',
@@ -83,6 +113,16 @@ describe 'druid::broker', :type => 'class' do
   end
 
   context 'On base system with memcached as cache' do
+    let(:facts) do
+      {
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
+      }
+    end
+
     let(:params) do
       {
         :cache_expiration                     => 4184004,

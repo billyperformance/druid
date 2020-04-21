@@ -687,6 +687,7 @@ class druid (
   }
 
   exec { "Remove all default extensions in directory ${install_dir}/${release_name}/extensions/":
+    path        => ['/usr/bin', '/usr/sbin', '/bin'],
     command     => "rm -rf ${install_dir}/${release_name}/extensions/*",
     subscribe   => Archive["/var/tmp/${release_name}-bin.tar.gz"],
     refreshonly => true,

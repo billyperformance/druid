@@ -2,6 +2,12 @@ fixtures:
   repositories:
     stdlib:
       repo: "git://github.com/puppetlabs/puppetlabs-stdlib"
-      ref: "4.7.0"
+      ref: "4.15.0"
+    archive:
+      repo: "git://github.com/voxpupuli/puppet-archive"
+      ref: "v1.3.0"
+    oracle_java:
+      repo: "git://github.com/antoineco/aco-oracle_java"
+      ref: "2.8.2"
   symlinks:
     druid: "#{source_dir}"
