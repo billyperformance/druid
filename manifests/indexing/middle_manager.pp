@@ -282,6 +282,7 @@ class druid::indexing::middle_manager (
 
   exec { "Create task base task directory with tmp":
     # this tmp directory can be used as the java.io.tmpdir for runner_java_opts if task_base_task_dir is in a separate partition with plenty of space
+    path        => ['/usr/bin', '/usr/sbin', '/bin'],
     command     => "mkdir -p ${task_base_task_dir}/tmp",
     creates     => "${task_base_task_dir}/tmp",
     before      => Service['druid-middle_manager'],

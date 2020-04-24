@@ -5,6 +5,10 @@ describe 'druid::indexing::overlord', :type => 'class' do
     let(:facts) do
       {
         :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
       }
     end
 
@@ -16,12 +20,22 @@ describe 'druid::indexing::overlord', :type => 'class' do
       should contain_file('/etc/druid/overlord/common.runtime.properties')
       should contain_file('/etc/druid/overlord/runtime.properties')
       should contain_file('/etc/systemd/system/druid-overlord.service')
-      should contain_exec('Reload systemd daemon for new overlord service file')
+      should contain_exec('Reload systemd daemon for new overlord service config')
       should contain_service('druid-overlord')
     }
   end
 
   context 'On base system with custom JVM parameters ' do
+    let(:facts) do
+      {
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
+      }
+    end
+
     let(:params) do
       {
         :jvm_opts => [
@@ -40,7 +54,7 @@ describe 'druid::indexing::overlord', :type => 'class' do
     end
 
     it {
-      should contain_file('/etc/systemd/system/druid-overlord.service').with_content("[Unit]\nDescription=Druid Overlord Node\n\n[Service]\nType=simple\nWorkingDirectory=/etc/druid/overlord/\nExecStart=/usr/bin/java -server -Xmx4g -Xms4g -XX:NewSize=256m -XX:MaxNewSize=256m -XX:MaxDirectMemorySize=2g -Duser.timezone=PDT -Dfile.encoding=latin-1 -Djava.util.logging.manager=custom.LogManager -Djava.io.tmpdir=/mnt/tmp -classpath .:/usr/local/lib/druid/lib/* io.druid.cli.Main server overlord\nSuccessExitStatus=130 143\nRestart=on-failure\n\n[Install]\nWantedBy=multi-user.target\n")
+      should contain_file('/etc/systemd/system/druid-overlord.service').with_content("[Unit]\nDescription=Druid Overlord Node\n\n[Service]\nType=simple\nStandardOutput=syslog\nStandardError=syslog\nSyslogFacility=daemon\nWorkingDirectory=/opt/druid/\nExecStart=/usr/bin/java -server -Xmx4g -Xms4g -XX:NewSize=256m -XX:MaxNewSize=256m -XX:MaxDirectMemorySize=2g -Duser.timezone=PDT -Dfile.encoding=latin-1 -Djava.util.logging.manager=custom.LogManager -Djava.io.tmpdir=/mnt/tmp -classpath .:/etc/druid/overlord/:/etc/druid:/opt/druid/lib/* io.druid.cli.Main server overlord\nSuccessExitStatus=130 143\nRestart=on-failure\n\n[Install]\nWantedBy=multi-user.target\n")
     }
   end
 
@@ -48,6 +62,10 @@ describe 'druid::indexing::overlord', :type => 'class' do
     let(:facts) do
       {
         :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
       }
     end
 
@@ -83,7 +101,7 @@ describe 'druid::indexing::overlord', :type => 'class' do
     end 
     
     it {
-      should contain_file('/etc/druid/overlord/runtime.properties').with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Node Configs\ndruid.host=192.168.17.54\ndruid.port=9090\ndruid.service=druid/test-overlord\n\n# Task Logging\ndruid.indexer.logs.type=file\n\n# Overlord Service\ndruid.indexer.runner.type=remote\ndruid.indexer.storage.type=metadata\ndruid.indexer.storage.recentlyFinishedThreshold=PT25H\ndruid.indexer.queue.maxSize=1024\ndruid.indexer.queue.startDelay=PT2M\ndruid.indexer.queue.restartDelay=PT32S\ndruid.indexer.queue.storageSyncRate=PT4M\n\n# Remote Mode\ndruid.indexer.runner.taskAssignmentTimeout=PT7M\ndruid.indexer.runner.minWorkerVersion=1\ndruid.indexer.runner.compressZnodes=false\ndruid.indexer.runner.maxZnodeBytes=524291\ndruid.indexer.runner.taskCleanupTimeout=PT17M\n\n# Autoscaling\ndruid.indexer.autoscale.doAutoscale=true\ndruid.indexer.autoscale.strategy=ec2\ndruid.indexer.autoscale.provisionPeriod=PT3M\ndruid.indexer.autoscale.terminatePeriod=PT7M\ndruid.indexer.autoscale.originTime=2014-01-01T00:55:00.000Z\ndruid.indexer.autoscale.workerIdleTimeout=PT92M\ndruid.indexer.autoscale.maxScalingDuration=PT16M\ndruid.indexer.autoscale.numEventsToTrack=13\ndruid.indexer.autoscale.pendingTaskTimeout=PT31S\ndruid.indexer.autoscale.workerVersion=v1\ndruid.indexer.autoscale.workerPort=8082\n")
+      should contain_file('/etc/druid/overlord/runtime.properties').with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Node Configs\ndruid.host=192.168.17.54\ndruid.port=9090\ndruid.service=druid/test-overlord\n\n# Overlord Service\ndruid.indexer.runner.type=remote\ndruid.indexer.storage.type=metadata\ndruid.indexer.storage.recentlyFinishedThreshold=PT25H\ndruid.indexer.queue.maxSize=1024\ndruid.indexer.queue.startDelay=PT2M\ndruid.indexer.queue.restartDelay=PT32S\ndruid.indexer.queue.storageSyncRate=PT4M\n\n# Remote Mode\ndruid.indexer.runner.taskAssignmentTimeout=PT7M\ndruid.indexer.runner.minWorkerVersion=1\ndruid.indexer.runner.compressZnodes=false\ndruid.indexer.runner.maxZnodeBytes=524291\ndruid.indexer.runner.taskCleanupTimeout=PT17M\n\n# Autoscaling\ndruid.indexer.autoscale.doAutoscale=true\ndruid.indexer.autoscale.strategy=ec2\ndruid.indexer.autoscale.provisionPeriod=PT3M\ndruid.indexer.autoscale.terminatePeriod=PT7M\ndruid.indexer.autoscale.originTime=2014-01-01T00:55:00.000Z\ndruid.indexer.autoscale.workerIdleTimeout=PT92M\ndruid.indexer.autoscale.maxScalingDuration=PT16M\ndruid.indexer.autoscale.numEventsToTrack=13\ndruid.indexer.autoscale.pendingTaskTimeout=PT31S\ndruid.indexer.autoscale.workerVersion=v1\ndruid.indexer.autoscale.workerPort=8082\n")
 
     }
   end
