@@ -264,7 +264,6 @@ class druid::indexing::middle_manager (
 
   validate_hash($fork_properties)
 
-  validate_array($runner_allowed_prefixes)
   validate_array($jvm_opts)
   validate_array($task_default_hadoop_coordinates)
 
@@ -275,9 +274,9 @@ class druid::indexing::middle_manager (
   validate_absolute_path($task_hadoop_working_path)
 
   if $druid::package_name == 'org.apache.druid' {
-    $middle_manager_runner_allowed_prefixes = "['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']"
+    $runner_allowed_prefixes = ['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
   } else {
-    $middle_manager_runner_allowed_prefixes = "['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']"
+    $runner_allowed_prefixes = ['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']
   }
 
   exec { "Create task base task directory with tmp":

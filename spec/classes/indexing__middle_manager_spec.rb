@@ -24,7 +24,24 @@ describe 'druid::indexing::middle_manager', :type => 'class' do
       should contain_service('druid-middle_manager')
     }
   end
-
+  context 'Check exec base task directory ' do
+    let(:facts) do
+      {
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
+      }
+    end
+    it {
+      should contain_exec('Create task base task directory with tmp').with({
+          :path        => ['/usr/bin', '/usr/sbin', '/bin'],
+          :command     => "mkdir -p /tmp/persistent/tasks/tmp",
+          :creates     => "/tmp/persistent/tasks/tmp",
+      })
+    }
+  end
   context 'On base system with custom JVM parameters ' do
     let(:facts) do
       {
@@ -79,7 +96,6 @@ describe 'druid::indexing::middle_manager', :type => 'class' do
         :remote_peon_max_retry_count     => 15,
         :remote_peon_max_wait            => 'PT15M',
         :remote_peon_min_wait            => 'PT6M',
-        :runner_allowed_prefixes         => ['druid', 'io.druid', 'user.timezone', 'file.encoding'],
         :runner_classpath                => '.:/test',
         :runner_compress_znodes          => false,
         :runner_java_command             => '/usr/bin/java',
@@ -99,7 +115,7 @@ describe 'druid::indexing::middle_manager', :type => 'class' do
     end 
     
     it {
-      should contain_file('/etc/druid/middle_manager/runtime.properties').with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Node Configs\ndruid.host=101.101.10.1\ndruid.port=8090\ndruid.service=test-druid/middlemanager\n\n# MiddleManager Service\ndruid.indexer.runner.allowedPrefixes=[\"druid\",\"io.druid\",\"user.timezone\",\"file.encoding\"]\ndruid.indexer.runner.classpath=.:/test\ndruid.indexer.runner.javaCommand=/usr/bin/java\ndruid.indexer.runner.javaOpts=-server\ndruid.indexer.runner.maxZnodeBytes=524188\ndruid.indexer.runner.startPort=8110\ndruid.worker.ip=127.0.0.1\ndruid.worker.version=2\ndruid.worker.capacity=2\ndruid.server.http.numThreads=10\n\n# Processing\ndruid.processing.buffer.sizeBytes=1073741824\n# Peon Configs\ndruid.peon.mode=remote\ndruid.indexer.task.baseDir=/mnt/tmp\ndruid.indexer.task.baseTaskDir=/mnt/tmp/persistent/tasks\ndruid.indexer.task.hadoopWorkingPath=/mnt/tmp/druid-indexing\ndruid.indexer.task.defaultRowFlushBoundary=50009\ndruid.indexer.task.defaultHadoopCoordinates=[\"org.apache.hadoop:hadoop-client:1.1.1\"]\ndruid.indexer.task.chathandler.type=announce\n\n# Remote Peon Configs\ndruid.peon.taskActionClient.retry.minWait=PT6M\ndruid.peon.taskActionClient.retry.maxWait=PT15M\ndruid.peon.taskActionClient.retry.maxRetryCount=15\n\n# GroupBy Engine\n")
+      should contain_file('/etc/druid/middle_manager/runtime.properties').with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Node Configs\ndruid.host=101.101.10.1\ndruid.port=8090\ndruid.service=test-druid/middlemanager\n\n# MiddleManager Service\ndruid.indexer.runner.allowedPrefixes=[\"com.metamx\",\"druid\",\"io.druid\",\"user.timezone\",\"file.encoding\"]\ndruid.indexer.runner.classpath=.:/test\ndruid.indexer.runner.javaCommand=/usr/bin/java\ndruid.indexer.runner.javaOpts=-server\ndruid.indexer.runner.maxZnodeBytes=524188\ndruid.indexer.runner.startPort=8110\ndruid.worker.ip=127.0.0.1\ndruid.worker.version=2\ndruid.worker.capacity=2\ndruid.server.http.numThreads=10\n\n# Processing\ndruid.processing.buffer.sizeBytes=1073741824\n# Peon Configs\ndruid.peon.mode=remote\ndruid.indexer.task.baseDir=/mnt/tmp\ndruid.indexer.task.baseTaskDir=/mnt/tmp/persistent/tasks\ndruid.indexer.task.hadoopWorkingPath=/mnt/tmp/druid-indexing\ndruid.indexer.task.defaultRowFlushBoundary=50009\ndruid.indexer.task.defaultHadoopCoordinates=[\"org.apache.hadoop:hadoop-client:1.1.1\"]\ndruid.indexer.task.chathandler.type=announce\n\n# Remote Peon Configs\ndruid.peon.taskActionClient.retry.minWait=PT6M\ndruid.peon.taskActionClient.retry.maxWait=PT15M\ndruid.peon.taskActionClient.retry.maxRetryCount=15\n\n# GroupBy Engine\n")
     }
   end
 end
