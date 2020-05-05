@@ -1,6 +1,6 @@
-# == Class: druid::realtime
+# == Class: druid::router
 #
-# Setup a Druid node runing the realtime service.
+# Setup a Druid node runing the router service.
 #
 # === Parameters
 #
@@ -20,7 +20,7 @@
 #   This is used as a dimension when emitting metrics and alerts.  It is
 #   used to differentiate between the various services
 #
-#   Default value: `'druid/realtime'`.
+#   Default value: `'druid/router'`.
 #
 # [*jvm_opts*]
 #   Array of options to set for the JVM running the service.

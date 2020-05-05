@@ -91,7 +91,7 @@
 #
 # [*processing_buffer_size_bytes*]
 #  This specifies a buffer size for the storage of intermediate results. The
-#  computation engine in both the Historical and Realtime nodes will use a
+#  computation engine in the Historical nodes will use a
 #  scratch buffer of this size to do all of their intermediate computations
 #  off-heap. Larger values allow for more aggregations in a single pass over
 #  the data while smaller values can require more passes depending on the
@@ -100,7 +100,7 @@
 #  Defaults to 1073741824 (1GB).
 #
 # [*processing_format_string*]
-#  Realtime and historical nodes use this format string to name their processing threads.
+#  Historical nodes use this format string to name their processing threads.
 #
 #  Defaults to 'processing-%s'.
 #

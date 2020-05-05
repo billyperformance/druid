@@ -126,7 +126,7 @@
 #   Defaults to `'noop'`.
 # 
 # [*request_logging_dir*]
-#   Historical, Realtime and Broker nodes maintain request logs of all of the
+#   Historical and Broker nodes maintain request logs of all of the
 #   requests they get (interacton is via POST, so normal request logs don’t
 #   generally capture information about the actual query), this specifies the
 #   directory to store the request logs in
@@ -161,12 +161,9 @@
 #       Reports statistics on Historical nodes.
 #     `'org.apache.druid.java.util.metrics.JvmMonitor'`:
 #       Reports JVM-related statistics.
-#     `'org.apache.druid.segment.realtime.RealtimeMetricsMonitor'`:
-#       Reports statistics on Realtime nodes.
 #
 #   For druid older than 0.13 druid versions use the following instead
 #     `'io.druid.client.cache.CacheMonitor'`:
-#     `'io.druid.segment.realtime.RealtimeMetricsMonitor'`:
 #     `'com.metamx.metrics.JvmMonitor'`:
 #     `'io.druid.server.metrics.HistoricalMetricsMonitor'`:
 #     `'com.metamx.metrics.SysMonitor'`:

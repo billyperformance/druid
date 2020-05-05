@@ -22,14 +22,13 @@
        * [druid::historical](#druidhistorical)
        * [druid::indexing::overlord](#druidindexingoverlord)
        * [druid::indexing::middle_manager](#druidindexingmiddle_manager)
-       * [druid::realtime](#druidrealtime)
     * [Private Defined Types](#private-defined-types)
        * [druid::service](#druidservice)
 5. [Limitations](#limitations)
 
 ## Module Description
 
-[Druid](druid.io) is a data store solution designed for online analytical processing of time-series data.  This module is used to manage the Druid services used throughout a Druid cluster, namely the Historical, Broker, Coordinator, Indexing Services, and Realtime services.
+[Druid](druid.io) is a data store solution designed for online analytical processing of time-series data.  This module is used to manage the Druid services used throughout a Druid cluster, namely the Historical, Broker, Coordinator, Indexing Services.
 
 ## Setup
 
@@ -472,7 +471,6 @@ Valid array values for druid version >= 0.13.0:
 | `'org.apache.druid.java.util.metrics.SysMonitor'` | This uses the SIGAR library to report on various system activities and statuses. Make sure to add the sigar library jar to your classpath if using this monitor. |
 | `'org.apache.druid.server.metrics.HistoricalMetricsMonitor'` | Reports statistics on Historical nodes. |
 | `'org.apache.druid.java.util.metrics.JvmMonitor'` | Reports JVM-related statistics. |
-| `'org.apache.druid.segment.realtime.RealtimeMetricsMonitor'` | Reports statistics on Realtime nodes. |
 
 Valid array values for druid version older than 0.13:
 
@@ -482,13 +480,12 @@ Valid array values for druid version older than 0.13:
 | `'com.metamx.metrics.SysMonitor'` | This uses the SIGAR library to report on various system activities and statuses. Make sure to add the sigar library jar to your classpath if using this monitor. |
 | `'io.druid.server.metrics.HistoricalMetricsMonitor'` | Reports statistics on Historical nodes. |
 | `'com.metamx.metrics.JvmMonitor'` | Reports JVM-related statistics. |
-| `'io.druid.segment.realtime.RealtimeMetricsMonitor'` | Reports statistics on Realtime nodes. |
 
 Default value: `[]`. 
 
 ##### `druid::request_logging_dir`
 
-Historical, Realtime and Broker nodes maintain request logs of all of the requests they get (interacton is via POST, so normal request logs don’t generally capture information about the actual query), this specifies the directory to store the request logs in. 
+Historical and Broker nodes maintain request logs of all of the requests they get (interacton is via POST, so normal request logs don’t generally capture information about the actual query), this specifies the directory to store the request logs in. 
 
 Default value: `''`. 
 
@@ -757,7 +754,7 @@ Default value: `['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Dj
 
 Buffer size for the storage of intermediate results.
 
-The computation engine in both the Historical and Realtime nodes will use a scratch buffer of this size to do all of their intermediate computations off-heap. Larger values allow for more aggregations in a single pass over the data while smaller values can require more passes depending on the query that is being executed.
+The computation engine in Historical nodes will use a scratch buffer of this size to do all of their intermediate computations off-heap. Larger values allow for more aggregations in a single pass over the data while smaller values can require more passes depending on the query that is being executed.
 
 Default value: `1073741824` (1GB).
 
@@ -996,7 +993,7 @@ Default value: `false`.
 
 ##### `druid::historical::processing_buffer_size_bytes`
 
-This specifies a buffer size for the storage of intermediate results. The computation engine in both the Historical and Realtime nodes will use a scratch buffer of this size to do all of their intermediate computations off-heap. Larger values allow for more aggregations in a single pass over the data while smaller values can require more passes depending on the query that is being executed. 
+This specifies a buffer size for the storage of intermediate results. The computation engine in the Historical nodes will use a scratch buffer of this size to do all of their intermediate computations off-heap. Larger values allow for more aggregations in a single pass over the data while smaller values can require more passes depending on the query that is being executed. 
 
 Default value: `1073741824` (1GB). 
 
@@ -1008,7 +1005,7 @@ Default value: `0` (disabled).
 
 ##### `druid::historical::processing_format_string`
 
-Realtime and historical nodes use this format string to name their processing threads. 
+Historical nodes use this format string to name their processing threads. 
 
 Default value: `'processing-%s'`. 
 
@@ -1493,114 +1490,6 @@ Version identifier for the middle manager.
 
 Default value: `'0'`.
 
-#### druid::realtime
-
-Sets up configuration and manages the Druid realtime service.
-
-##### `druid::realtime::host`
-
-Host address the service listens on.
-
-Default value: The `$ipaddress` fact.
-
-##### `druid::realtime::port`
-
-Port the service listens on.
-
-Default value: `8084`.
-
-##### `druid::realtime::service`
-
-The name of the service.
-
-This is used as a dimension when emitting metrics and alerts.  It is used to differentiate between the various services
-
-Default value: `'druid/realtime'`.
-
-##### `druid::realtime::jvm_opts`
-
-Array of options to set for the JVM running the service.
-
-Default value: `[
-    '-server',
-    '-Duser.timezone=UTC',
-    '-Dfile.encoding=UTF-8',
-    '-Djava.io.tmpdir=/tmp',
-    '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager'
-  ]`
-
-##### `druid::realtime::processing_buffer_size_bytes`
-
-Buffer size for the storage of intermediate results.
-
-The computation engine uses a scratch buffer of this size to do all intermediate computations off-heap. Larger values allow for more aggregations in a single pass over the data while smaller values can require more passes depending on the query that is being executed.
-
-Default value: `1073741824` (1GB).
-
-##### `druid::realtime::processing_column_cache_size_bytes`
-
-Maximum size in bytes for the dimension value lookup cache.
-
-Any value greater than `0` enables the cache. Enabling the lookup cache can significantly improve the performance of aggregators operating on dimension values, such as the JavaScript aggregator, or cardinality aggregator, but can slow things down if the cache hit rate is low (i.e.  dimensions with few repeating values). Enabling it may also require additional garbage collection tuning to avoid long GC pauses.
-
-Default value: `0` (disabled).
-
-##### `druid::realtime::processing_format_string`
-
-Format string to name processing threads.
-
-Default value: `'processing-%s'`.
-
-##### `druid::realtime::processing_num_threads`
-
-Number of processing threads for processing of segments.
-
-Rule of thumb is num\_cores - 1, which means that even under heavy load there will still be one core available to do background tasks like talking with ZooKeeper and pulling down segments.
-
-##### `druid::realtime::publish_type`
-
-Where to publish segments.
-
-Valid values: `'noop'` or `'metadata'`.
-
-Default value: `'metadata'`.
-
-##### `druid::realtime::query_group_by_max_intermediate_rows`
-
-Maximum number of intermediate rows.
-
-Default value: `50000`.
-
-##### `druid::realtime::query_group_by_max_results`
-
-Maximum number of results.
-
-Default value: `500000`.
-
-##### `druid::realtime::query_group_by_single_threaded`
-
-Run single threaded `groupBy` queries.
-
-Default value: `false`.
-
-##### `druid::realtime::query_search_max_search_limit`
-
-Maximum number of search results to return.
-
-Default value: `1000`.
-
-##### `druid::realtime::segment_cache_locations`
-
-Where intermediate segments are stored.
-
-##### `druid::realtime::spec_file`
-
-File location of realtime specFile.
-
-##### `druid::realtime::spec_file_content`
-
-Content to ensure in spec\_file.
-
 ### Private Defined Types
 
 #### druid::service
@@ -1609,7 +1498,7 @@ Resource used to setup common files needed for Druic services.
 
 ##### `druid::indexing::middle_manager::service_name`
 
-Name the service is known by (e.g historical, broker, realtime, ...).
+Name the service is known by (e.g historical, broker, ...).
 
 Default value: `$namevar`
 

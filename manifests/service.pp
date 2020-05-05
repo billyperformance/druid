@@ -5,7 +5,7 @@
 # === Parameters
 #
 # [*service_name*]
-#   Name the service is known by (e.g historical, broker, realtime, ...).
+#   Name the service is known by (e.g historical, broker, router, ...).
 #
 #   Default value: `$name`
 #
