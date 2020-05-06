@@ -1,11 +1,11 @@
 class druid::params() {
   $version                                            = '0.9.2'
+  $package_name                                       = 'io.druid'
   $install_dir                                        = '/opt'
   $install_java                                       = true
   $config_dir                                         = '/etc/druid'
   $extra_classpaths                                   = '/etc/druid'
   $syslog_facility                                    = 'daemon'
-  $package_name                                       = 'io.druid'
   $extensions_remote_repositories                     = ['http://repo1.maven.org/maven2/', 'https://metamx.artifactoryonline.com/metamx/pub-libs-releases-local']
   $extensions_local_repository                        = '~/.m2/repository'
   $extensions_coordinates                             = []

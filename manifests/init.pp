@@ -9,6 +9,14 @@
 #
 #   Defaults to '0.8.1'.
 #
+# [*package_name*]
+#   Package name for the druid install.
+#   Depending on selected version, MUST BE:
+#   if version >= 0.13.0 then 'org.apache.druid'
+#   else 'io.druid'
+#
+#   Defaults to 'io.druid'.
+#
 # [*install_dir*]
 #   Directory druid will be installed in.
 #
@@ -450,12 +458,12 @@
 #
 class druid (
   $version                                  = $druid::params::version,
+  $package_name                             = $druid::params::package_name,
   $install_java                             = $druid::params::install_java,
   $install_dir                              = $druid::params::install_dir,
   $config_dir                               = $druid::params::config_dir,
   $extra_classpaths                         = $druid::params::extra_classpaths,
   $syslog_facility                          = $druid::params::syslog_facility,
-  $package_name                             = $druid::params::package_name,
   $extensions_remote_repositories           = $druid::params::extensions_remote_repositories,
   $extensions_local_repository              = $druid::params::extensions_local_repository,
   $extensions_coordinates                   = $druid::params::extensions_coordinates,
@@ -651,7 +659,12 @@ class druid (
   ])
 
   validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
-  validate_re($package_name, ['io.druid', 'org.apache.druid'])
+
+  if versioncmp($version, '0.13.0') >= 0 {
+    validate_re($package_name, ['org.apache.druid'])
+  } else {
+    validate_re($package_name, ['io.druid'])
+  }
 
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)

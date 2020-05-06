@@ -83,6 +83,44 @@ describe 'druid', :type => 'class' do
     }
   end
 
+  context 'Check that you cannot set org.apache.druid with a version < 0.13.0' do
+    let(:facts) do
+      {
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture    => 'x86_64',
+      }
+    end
+    let(:params) do
+      {
+        :version      => '0.9.2',
+        :package_name => 'org.apache.druid',
+      }
+    end
+    it { should compile.and_raise_error(/"org.apache.druid" does not match \["io.druid"\]/) }
+  end
+
+  context 'Check that you cannot set io.druid with a version >= 0.13.0' do
+    let(:facts) do
+      {
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture    => 'x86_64',
+      }
+    end
+    let(:params) do
+      {
+        :version      => '0.14.2',
+        :package_name => 'io.druid',
+      }
+    end
+    it { should compile.and_raise_error(/"io.druid" does not match \["org.apache.druid"\]/) }
+  end
+
   context 'On generic system with custom druid parameters' do
     let(:params) do
       {
