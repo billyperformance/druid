@@ -108,6 +108,7 @@ druid.cache.memcachedPrefix=<%= @cache_memcached_prefix %>
 <% if @num_merge_buffers and @nun_merge_buffers != '' -%>
 druid.processing.numMergeBuffers=<%= @num_merge_buffers %>
 <% end -%>
+
 <% if @sql_enable and @sql_enable != '' -%>
 # Druid SQL
 druid.sql.enable=<%= @sql_enable %>
