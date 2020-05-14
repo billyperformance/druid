@@ -274,7 +274,7 @@ class druid::indexing::middle_manager (
   validate_absolute_path($task_hadoop_working_path)
 
   if $druid::package_name == 'org.apache.druid' {
-    $runner_allowed_prefixes = ['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
+    $runner_allowed_prefixes = ['org.apache.druid.java.util', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
   } else {
     $runner_allowed_prefixes = ['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']
   }

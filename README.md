@@ -1388,16 +1388,6 @@ Min retry time a remote peon makes communicating with the overlord.
 
 Default value: `'PT1M'`.
 
-##### `druid::indexing::middle_manager::runner_allowed_prefixes`
-
-Array of prefixes of configs that are passed down to peons.
-
-Example for druid version >= 0.13.0:
-Default value: `['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']`.
-
-Example for druid version older than 0.13
-Default value: `['org.apache.druid.java.util.metrics', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']`.
-
 ##### `druid::indexing::middle_manager::runner_classpath`
 
 Java classpath for the peons.
