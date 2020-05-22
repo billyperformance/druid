@@ -1,91 +1,124 @@
 require 'spec_helper'
 
 describe 'druid', :type => 'class' do
-  context 'On generic system with defaults for all parameters' do
+  context 'On generic system with defaults for all parameters in Druid 0.9.2' do
+    let(:facts) do
+      {
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture    => 'x86_64',
+      }
+    end
     it {
       should compile.with_all_deps
       should contain_class('druid')
-      should contain_file('/usr/local/lib/druid')\
-        .with({:ensure => :link, :target => '/usr/local/lib/druid-0.8.1'})\
-        .that_requires('Exec[Download and untar druid-0.8.1]')
-      should contain_file('/usr/local/lib')\
-        .with({:ensure => :directory})\
-        .that_requires('Exec[Create /usr/local/lib]')
-      should contain_file('/etc/druid')\
-        .with({:ensure => :directory})\
-        .that_requires('Exec[Create /etc/druid]')
-      should contain_file('/etc/druid/common.runtime.properties')\
-        .with({:ensure => :file})\
-        .that_requires('File[/etc/druid]')
-      should contain_exec('Create /usr/local/lib').with({
-          :command => 'mkdir -p /usr/local/lib',
-          :path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-          :creates => '/usr/local/lib',
-          :cwd     => '/',
+      should contain_archive('/var/tmp/druid-0.9.2-bin.tar.gz').with({
+        :ensure          => 'present',
+        :extract         => 'true',
+        :extract_path    => '/opt',
+        :source          => 'http://static.druid.io/artifacts/releases/druid-0.9.2-bin.tar.gz',
+        :checksum_verify => 'false',
+        :creates         => '/opt/druid-0.9.2',
+        :cleanup         => 'true',
       })
-      should contain_exec('Create /etc/druid').with({
-          :command => 'mkdir -p /etc/druid',
-          :path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-          :creates => '/etc/druid',
-          :cwd     => '/',
+      should contain_exec('Remove all default extensions in directory /opt/druid-0.9.2/extensions/').with({
+        :path => ['/usr/bin', '/usr/sbin', '/bin'],
+        :command => "rm -rf /opt/druid-0.9.2/extensions/*",
+        :subscribe => "Archive[/var/tmp/druid-0.9.2-bin.tar.gz]",
+        :refreshonly => true,
       })
-      should contain_exec('Download and untar druid-0.8.1').with({
-          :command => 'wget -O - http://static.druid.io/artifacts/releases/druid-0.8.1-bin.tar.gz | tar zx',
-          :path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-          :creates => '/usr/local/lib/druid-0.8.1',
-          :cwd     => '/usr/local/lib',
-      }).that_requires('File[/usr/local/lib]').that_requires('Package[wget]')
-      should contain_package('openjdk-7-jre-headless')\
-        .with({:ensure => 'present'})
-      should contain_package('wget')\
-        .with({:ensure => 'present'})
+      should contain_file('/opt/druid').with({
+        :ensure => :link,
+        :target => '/opt/druid-0.9.2'
+      }).that_requires('Archive[/var/tmp/druid-0.9.2-bin.tar.gz]')
+      should contain_file('/etc/druid').with({
+        :ensure => 'directory'
+      })
     }
   end
 
   context 'On generic system with custom install parameters' do
-    let(:params) do
+    let(:facts) do
       {
-        :version     => '0.7.0',
-        :java_pkg    => 'openjdk-7-jre',
-        :install_dir => '/opt/druid',
-        :config_dir  => '/opt/druid_config',
+        :memorysize => '10 GB',
+        :ipaddress => '127.0.0.1',
+        :osfamily => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture => 'x86_64',
       }
     end
-
+    let(:params) do
+      {
+        :version      => '0.14.2',
+        :package_name => 'org.apache.druid',
+      }
+    end
     it {
-      should contain_file('/opt/druid/druid')\
-        .with({:ensure => :link, :target => '/opt/druid/druid-0.7.0'})\
-        .that_requires('Exec[Download and untar druid-0.7.0]')
-      should contain_file('/opt/druid')\
-        .with({:ensure => :directory})\
-        .that_requires('Exec[Create /opt/druid]')
-      should contain_file('/opt/druid_config')\
-        .with({:ensure => :directory})\
-        .that_requires('Exec[Create /opt/druid_config]')
-      should contain_file('/opt/druid_config/common.runtime.properties')\
-        .with({:ensure => :file})\
-        .that_requires('File[/opt/druid_config]')
-      should contain_exec('Create /opt/druid').with({
-          :command => 'mkdir -p /opt/druid',
-          :path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-          :creates => '/opt/druid',
-          :cwd     => '/',
+      should compile.with_all_deps
+      should contain_class('druid')
+      should contain_archive('/var/tmp/apache-druid-0.14.2-incubating-bin.tar.gz').with({
+        :ensure          => 'present',
+        :extract         => 'true',
+        :extract_path    => '/opt',
+        :source          => 'https://archive.apache.org/dist/incubator/druid/0.14.2-incubating/apache-druid-0.14.2-incubating-bin.tar.gz',
+        :checksum_verify => 'false',
+        :creates         => '/opt/apache-druid-0.14.2-incubating',
+        :cleanup         => 'true',
       })
-      should contain_exec('Create /opt/druid_config').with({
-          :command => 'mkdir -p /opt/druid_config',
-          :path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-          :creates => '/opt/druid_config',
-          :cwd     => '/',
+      should contain_exec('Remove all default extensions in directory /opt/apache-druid-0.14.2-incubating/extensions/').with({
+        :path => ['/usr/bin', '/usr/sbin', '/bin'],
+        :command => "rm -rf /opt/apache-druid-0.14.2-incubating/extensions/*",
+        :subscribe => "Archive[/var/tmp/apache-druid-0.14.2-incubating-bin.tar.gz]",
+        :refreshonly => true,
       })
-      should contain_exec('Download and untar druid-0.7.0').with({
-          :command => 'wget -O - http://static.druid.io/artifacts/releases/druid-0.7.0-bin.tar.gz | tar zx',
-          :path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-          :creates => '/opt/druid/druid-0.7.0',
-          :cwd     => '/opt/druid',
-      }).that_requires('File[/opt/druid]').that_requires('Package[wget]')
-      should contain_package('openjdk-7-jre')\
-        .with({:ensure => 'present'})
+      should contain_file('/opt/druid').with({
+        :ensure => :link,
+        :target => '/opt/apache-druid-0.14.2-incubating'
+      }).that_requires('Archive[/var/tmp/apache-druid-0.14.2-incubating-bin.tar.gz]')
+      should contain_file('/etc/druid').with({
+        :ensure => 'directory'
+      })
     }
+  end
+
+  context 'Check that you cannot set org.apache.druid with a version < 0.13.0' do
+    let(:facts) do
+      {
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture    => 'x86_64',
+      }
+    end
+    let(:params) do
+      {
+        :version      => '0.9.2',
+        :package_name => 'org.apache.druid',
+      }
+    end
+    it { should compile.and_raise_error(/"org.apache.druid" does not match \["io.druid"\]/) }
+  end
+
+  context 'Check that you cannot set io.druid with a version >= 0.13.0' do
+    let(:facts) do
+      {
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture    => 'x86_64',
+      }
+    end
+    let(:params) do
+      {
+        :version      => '0.14.2',
+        :package_name => 'io.druid',
+      }
+    end
+    it { should compile.and_raise_error(/"io.druid" does not match \["org.apache.druid"\]/) }
   end
 
   context 'On generic system with custom druid parameters' do
@@ -94,6 +127,7 @@ describe 'druid', :type => 'class' do
         :extensions_remote_repositories           => ['http://repo1.maven.org/maven2/'],
         :extensions_local_repository              => '~/.m2-test/repository',
         :extensions_coordinates                   => ['groupID;artifactID:version'],
+        :extensions_hadoop_deps_dir               => '/opt/druid/hadoop-dependencies',
         :extensions_default_version               => 'test',
         :extensions_search_current_classloader    => false,
         :zk_service_host                          => '192.168.0.150',
@@ -164,10 +198,22 @@ describe 'druid', :type => 'class' do
         :announcer_max_bytes_per_node             => 524289,
       }
     end
-
+    let(:facts) do
+      {
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
+        :operatingsystem => 'Darwin',
+        :architecture    => 'x86_64',
+      }
+    end
+    it {
+      should contain_file('/etc/druid/log4j2.xml')\
+        .with_content("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<Configuration status=\"WARN\">\n    <Appenders>\n        <Console name=\"Console\" target=\"SYSTEM_OUT\">\n            <PatternLayout pattern=\"%d{ISO8601} %p [%t] %c - %m%n\"/>\n        </Console>\n    </Appenders>\n    <Loggers>\n        <Root level=\"info\">\n            <AppenderRef ref=\"Console\"/>\n        </Root>\n    </Loggers>\n</Configuration>")
+    }
     it {
       should contain_file('/etc/druid/common.runtime.properties')\
-        .with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Extensions\ndruid.extensions.remoteRepositories=[\"http://repo1.maven.org/maven2/\"]\ndruid.extensions.localRepository=~/.m2-test/repository\ndruid.extensions.coordinates=[\"groupID;artifactID:version\"]\ndruid.extensions.defaultVersion=test\ndruid.extensions.searchCurrentClassloader=false\n\n# Zookeeper\ndruid.zk.paths.base=/druid\ndruid.zk.service.host=192.168.0.150\ndruid.zk.service.sessionTimeoutMs=30002\ndruid.curator.compress=false\ndruid.zk.paths.propertiesPath=/druid/1\ndruid.zk.paths.announcementsPath=/druid/2\ndruid.zk.paths.liveSegmentsPath=/druid/3\ndruid.zk.paths.loadQueuePath=/druid/4\ndruid.zk.paths.coordinatorPath=/druid/5\ndruid.zk.paths.indexer.base=/druid/6\ndruid.zk.paths.indexer.announcementsPath=/druid/7\ndruid.zk.paths.indexer.tasksPath=/druid/8\ndruid.zk.paths.indexer.statusPath=/druid/9\ndruid.zk.paths.indexer.leaderLatchPath=/druid/10\ndruid.discovery.curator.path=/druid-test/discovery\n\n# Request Logging\ndruid.request.logging.type=file\ndruid.request.logging.dir=/log/\n\n# Enabling Metrics\ndruid.monitoring.emissionPeriod=PT2m\ndruid.monitoring.monitors=[\"\"]\n\n# Emitting Metrics\ndruid.emitter=test-logging\n\n# Metadata Storage\ndruid.metadata.storage.type=mysql\ndruid.metadata.storage.connector.connectURI=jdbc:mysql://127.0.0.1:3306/druid?characterEncoding=UTF-8\ndruid.metadata.storage.connector.user=druid-test\ndruid.metadata.storage.connector.password=test_insecure_pass\ndruid.metadata.storage.connector.createTables=false\ndruid.metadata.storage.tables.base=druid-test\ndruid.metadata.storage.tables.segmentTable=druid-test_segments\ndruid.metadata.storage.tables.ruleTable=druid-test_rules\ndruid.metadata.storage.tables.configTable=druid-test_config\ndruid.metadata.storage.tables.tasks=druid-test_tasks\ndruid.metadata.storage.tables.taskLog=druid-test_taskLog\ndruid.metadata.storage.tables.taskLock=druid-test_taskLock\ndruid.metadata.storage.tables.audit=druid-test_audit\n\n# Deep Storage\ndruid.storage.type=s3\ndruid.s3.accessKey=key3\ndruid.s3.secretKey=key2\ndruid.storage.bucket=druid\ndruid.storage.baseKey=key1\ndruid.storage.disableAcl=true\ndruid.storage.archiveBucket=druid-archive\ndruid.storage.archiveBaseKey=druid-base-key\n\n# Caching\ndruid.cache.type=memcached\ndruid.cache.unCacheable=groupBy\ndruid.cache.expiration=2592002\ndruid.cache.timeout=501\ndruid.cache.hosts=127.0.0.1:1221,192.168.0.10:1122\ndruid.cache.maxObjectSize=52428802\ndruid.cache.memcachedPrefix=druid-test\n\n# Indexing Service Discovery\ndruid.selectors.indexing.serviceName=druid-test/overlord\n\n# Announcing Segments\ndruid.announcer.type=lecagy\n")
+        .with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Extensions\ndruid.extensions.remoteRepositories=[\"http://repo1.maven.org/maven2/\"]\ndruid.extensions.localRepository=~/.m2-test/repository\ndruid.extensions.coordinates=[\"groupID;artifactID:version\"]\ndruid.extensions.defaultVersion=test\ndruid.extensions.searchCurrentClassloader=false\ndruid.extensions.hadoopDependenciesDir=/opt/druid/hadoop-dependencies\n\n# Zookeeper\ndruid.zk.paths.base=/druid\ndruid.zk.service.host=192.168.0.150\ndruid.zk.service.sessionTimeoutMs=30002\ndruid.curator.compress=false\ndruid.zk.paths.propertiesPath=/druid/1\ndruid.zk.paths.announcementsPath=/druid/2\ndruid.zk.paths.liveSegmentsPath=/druid/3\ndruid.zk.paths.loadQueuePath=/druid/4\ndruid.zk.paths.coordinatorPath=/druid/5\ndruid.zk.paths.indexer.base=/druid/6\ndruid.zk.paths.indexer.announcementsPath=/druid/7\ndruid.zk.paths.indexer.tasksPath=/druid/8\ndruid.zk.paths.indexer.statusPath=/druid/9\ndruid.zk.paths.indexer.leaderLatchPath=/druid/10\ndruid.discovery.curator.path=/druid-test/discovery\n\n# Request Logging\ndruid.request.logging.type=file\ndruid.request.logging.dir=/log/\n\n# Enabling Metrics\ndruid.monitoring.emissionPeriod=PT2m\ndruid.monitoring.monitors=[\"mode\"]\n\n# Emitting Metrics\ndruid.emitter=test-logging\n\n# Metadata Storage\ndruid.metadata.storage.type=mysql\ndruid.metadata.storage.connector.connectURI=jdbc:mysql://127.0.0.1:3306/druid?characterEncoding=UTF-8\ndruid.metadata.storage.connector.user=druid-test\ndruid.metadata.storage.connector.password=test_insecure_pass\ndruid.metadata.storage.connector.createTables=false\ndruid.metadata.storage.tables.base=druid-test\ndruid.metadata.storage.tables.segmentTable=druid-test_segments\ndruid.metadata.storage.tables.ruleTable=druid-test_rules\ndruid.metadata.storage.tables.configTable=druid-test_config\ndruid.metadata.storage.tables.tasks=druid-test_tasks\ndruid.metadata.storage.tables.taskLog=druid-test_taskLog\ndruid.metadata.storage.tables.taskLock=druid-test_taskLock\ndruid.metadata.storage.tables.audit=druid-test_audit\n\n# Deep Storage\ndruid.storage.type=s3\ndruid.s3.accessKey=key3\ndruid.s3.secretKey=key2\ndruid.storage.bucket=druid\ndruid.storage.baseKey=key1\ndruid.storage.disableAcl=true\ndruid.storage.archiveBucket=druid-archive\ndruid.storage.archiveBaseKey=druid-base-key\n\n# Caching\ndruid.cache.type=memcached\ndruid.cache.unCacheable=groupBy\ndruid.cache.expiration=2592002\ndruid.cache.timeout=501\ndruid.cache.hosts=127.0.0.1:1221,192.168.0.10:1122\ndruid.cache.maxObjectSize=52428802\ndruid.cache.memcachedPrefix=druid-test\n\n# Indexing Service Discovery\ndruid.selectors.indexing.serviceName=druid-test/overlord\n\n# Coordinator Service Discovery\ndruid.selectors.coordinator.serviceName=druid/coordinator\n\n# Logging\n# #\n#\n# # Log all runtime properties on startup. Disable to avoid logging properties on startup:\n\ndruid.startup.logging.logProperties=true\n#\n# Announcing Segments\ndruid.announcer.type=lecagy\n# Task Logging\ndruid.indexer.logs.type=file\ndruid.indexer.logs.directory=/var/log\n")
     }
   end
 end

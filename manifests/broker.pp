@@ -130,7 +130,7 @@
 # [*processing_buffer_size_bytes*]
 #   Buffer size for the storage of intermediate results.
 #
-#   The computation engine in both the Historical and Realtime nodes will
+#   The computation engine in the Historical nodes will
 #   use a scratch buffer of this size to do all of their intermediate
 #   computations off-heap. Larger values allow for more aggregations in a
 #   single pass over the data while smaller values can require more passes
@@ -267,6 +267,7 @@ class druid::broker (
   $server_http_max_idle_time            = $druid::params::broker_server_http_max_idle_time,
   $server_http_num_threads              = $druid::params::broker_server_http_num_threads,
   $num_merge_buffers                    = $druid::params::broker_num_merge_buffers,
+  $sql_enable                           = $druid::params::broker_sql_enable,
 ) inherits druid::params {
   require druid
 

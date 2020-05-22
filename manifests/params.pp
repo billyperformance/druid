@@ -1,5 +1,6 @@
 class druid::params() {
   $version                                            = '0.9.2'
+  $package_name                                       = 'io.druid'
   $install_dir                                        = '/opt'
   $install_java                                       = true
   $config_dir                                         = '/etc/druid'
@@ -8,6 +9,8 @@ class druid::params() {
   $extensions_remote_repositories                     = ['http://repo1.maven.org/maven2/', 'https://metamx.artifactoryonline.com/metamx/pub-libs-releases-local']
   $extensions_local_repository                        = '~/.m2/repository'
   $extensions_coordinates                             = []
+  $extensions_hadoop_deps_dir                         = '/opt/druid/hadoop-dependencies'
+  $extensions_loadlist                                = []
   $extensions_default_version                         = undef
   $extensions_search_current_classloader              = true
   $log_properties                                     = true
@@ -116,6 +119,7 @@ class druid::params() {
   $broker_server_http_max_idle_time                   = 'PT5m'
   $broker_server_http_num_threads                     = 10
   $broker_num_merge_buffers                           = undef
+  $broker_sql_enable                                  = undef
   $coordinator_host                                   = $::ipaddress
   $coordinator_port                                   = 8081
   $coordinator_service                                = 'druid/coordinator'
@@ -131,22 +135,22 @@ class druid::params() {
   $coordinator_period                                 = 'PT60S'
   $coordinator_period_indexing_period                 = 'PT1800S'
   $coordinator_start_delay                            = 'PT300S'
-  $realtime_host                                      = $::ipaddress
-  $realtime_port                                      = 8084
-  $realtime_service                                   = 'druid/realtime'
-  $realtime_jvm_opts                                  = ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']
-  $realtime_processing_buffer_size_bytes              = 1073741824
-  $realtime_processing_column_cache_size_bytes        = 0
-  $realtime_processing_format_string                  = 'processing-%s'
-  $realtime_processing_num_threads                    = undef
-  $realtime_publish_type                              = 'metadata'
-  $realtime_query_group_by_max_intermediate_rows      = 50000
-  $realtime_query_group_by_max_results                = 500000
-  $realtime_query_group_by_single_threaded            = false
-  $realtime_query_search_max_search_limit             = 1000
-  $realtime_segment_cache_locations                   = undef
-  $realtime_spec_file                                 = undef
-  $realtime_spec_file_content                         = undef
+  $router_host                                        = $::ipaddress
+  $router_plaintext_port                              = 8091
+  $router_service                                     = 'druid/router'
+  $router_jvm_opts                                    = ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']
+  $router_default_broker_service_name                 = 'druid/broker'
+  $router_coordinator_service_name                    = 'druid/coordinator'
+  $router_management_proxy_enabled                    = false
+  $router_tier_to_broker_map                          = { '_default_tier' => '' }
+  $router_default_rule                                = '_default'
+  $router_poll_period                                 = 'PT1M'
+  $router_strategies                                  = [ { 'type'=>'timeBoundary' },{ 'type'=>'priority' } ]
+  $router_avatica_balancer_type                       = 'rendezvousHash'
+  $router_http_num_connections                        = 5
+  $router_http_read_timeout                           = 'PT15M'
+  $router_http_num_max_threads                        = 10
+  $router_server_http_num_threads                     = 10
   $historical_host                                    = $::ipaddress
   $historical_port                                    = 8083
   $historical_service                                 = 'druid/historical'
@@ -192,7 +196,6 @@ class druid::params() {
   $middle_manager_remote_peon_max_retry_count         = 10
   $middle_manager_remote_peon_max_wait                = 'PT10M'
   $middle_manager_remote_peon_min_wait                = 'PT1M'
-  $middle_manager_runner_allowed_prefixes             = ['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']
   $middle_manager_runner_classpath                    = undef
   $middle_manager_runner_compress_znodes              = true
   $middle_manager_runner_java_command                 = 'java'

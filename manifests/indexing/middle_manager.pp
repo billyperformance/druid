@@ -33,7 +33,14 @@
 #   unvalidated.  The keys should NOT include
 #   `'druid.indexer.fork.property'` as a prefix.
 #
-#   Example:
+#   Example for druid >= 0.13.0:
+#
+#   ```puppet
+#     {
+#       "druid.monitoring.monitors" => "[\"io.druid.java.util.metrics.JvmMonitor\"]",
+#       "druid.processing.numThreads" => 2,
+#     }
+#   ```#   Example for druid version older than 0.13:
 #
 #   ```puppet
 #     {
@@ -41,7 +48,6 @@
 #       "druid.processing.numThreads" => 2,
 #     }
 #   ```
-#
 #   Default value: `{}`
 #
 # [*jvm_opts*]
@@ -67,7 +73,7 @@
 # [*processing_buffer_size_bytes*]
 #   Buffer size for the storage of intermediate results.
 #
-#   The computation engine in both the Historical and Realtime nodes will
+#   The computation engine in the Historical nodes will
 #   use a scratch buffer of this size to do all of their intermediate
 #   computations off-heap. Larger values allow for more aggregations in a
 #   single pass over the data while smaller values can require more passes
@@ -97,11 +103,6 @@
 #   Min retry time a remote peon makes communicating with the overlord.
 #
 #   Default value: `'PT1M'`.
-#
-# [*runner_allowed_prefixes*]
-#   Array of prefixes of configs that are passed down to peons.
-#
-#   Default value: `['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']`.
 #
 # [*runner_classpath*]
 #   Java classpath for the peons.
@@ -209,7 +210,6 @@ class druid::indexing::middle_manager (
   $remote_peon_max_retry_count     = $druid::params::middle_manager_remote_peon_max_retry_count,
   $remote_peon_max_wait            = $druid::params::middle_manager_remote_peon_max_wait,
   $remote_peon_min_wait            = $druid::params::middle_manager_remote_peon_min_wait,
-  $runner_allowed_prefixes         = $druid::params::middle_manager_runner_allowed_prefixes,
   $runner_classpath                = $druid::params::middle_manager_runner_classpath,
   $runner_compress_znodes          = $druid::params::middle_manager_runner_compress_znodes,
   $runner_java_command             = $druid::params::middle_manager_runner_java_command,
@@ -264,7 +264,6 @@ class druid::indexing::middle_manager (
 
   validate_hash($fork_properties)
 
-  validate_array($runner_allowed_prefixes)
   validate_array($jvm_opts)
   validate_array($task_default_hadoop_coordinates)
 
@@ -274,10 +273,18 @@ class druid::indexing::middle_manager (
   validate_absolute_path($task_base_task_dir)
   validate_absolute_path($task_hadoop_working_path)
 
-  # this directory can be used as the java.io.tmpdir for runner_java_opts if task_base_task_dir is in a separate partition with plenty of space
-  file { "${task_base_task_dir}/tmp":
-    ensure  => directory,
-    before  => Service['druid-middle_manager'],
+  if $druid::package_name == 'org.apache.druid' {
+    $runner_allowed_prefixes = ['org.apache.druid.java.util', 'druid', 'org.apache.druid', 'user.timezone', 'file.encoding']
+  } else {
+    $runner_allowed_prefixes = ['com.metamx', 'druid', 'io.druid', 'user.timezone', 'file.encoding']
+  }
+
+  exec { "Create task base task directory with tmp":
+    # this tmp directory can be used as the java.io.tmpdir for runner_java_opts if task_base_task_dir is in a separate partition with plenty of space
+    path        => ['/usr/bin', '/usr/sbin', '/bin'],
+    command     => "mkdir -p ${task_base_task_dir}/tmp",
+    creates     => "${task_base_task_dir}/tmp",
+    before      => Service['druid-middle_manager'],
   }
 
   druid::service { 'middle_manager':

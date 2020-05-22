@@ -9,10 +9,13 @@
 #
 #   Defaults to '0.8.1'.
 #
-# [*java_pkg*]
-#   Name of the java package to ensure installed on system.
+# [*package_name*]
+#   Package name for the druid install.
+#   Depending on selected version, MUST BE:
+#   if version >= 0.13.0 then 'org.apache.druid'
+#   else 'io.druid'
 #
-#   Defaults to 'openjdk-7-jre-headless'.
+#   Defaults to 'io.druid'.
 #
 # [*install_dir*]
 #   Directory druid will be installed in.
@@ -131,7 +134,7 @@
 #   Defaults to `'noop'`.
 # 
 # [*request_logging_dir*]
-#   Historical, Realtime and Broker nodes maintain request logs of all of the
+#   Historical and Broker nodes maintain request logs of all of the
 #   requests they get (interacton is via POST, so normal request logs don’t
 #   generally capture information about the actual query), this specifies the
 #   directory to store the request logs in
@@ -153,21 +156,26 @@
 #   information.
 # 
 #   Valid array values are:
-#     `'io.druid.client.cache.CacheMonitor'`:
+#     `'org.apache.druid.client.cache.CacheMonitor'`:
 #       Emits metrics (to logs) about the segment results cache for Historical
 #       and Broker nodes. Reports typical cache statistics include hits,
 #       misses, rates, and size (bytes and number of entries), as well as
 #       timeouts and and errors.
-#     `'com.metamx.metrics.SysMonitor'`:
+#     `'org.apache.druid.java.util.metrics.SysMonitor'`:
 #       This uses the SIGAR library to report on various system activities
 #       and statuses. Make sure to add the sigar library jar to your classpath
 #       if using this monitor.
-#     `'io.druid.server.metrics.HistoricalMetricsMonitor'`:
+#     `'org.apache.druid.server.metrics.HistoricalMetricsMonitor'`:
 #       Reports statistics on Historical nodes.
-#     `'com.metamx.metrics.JvmMonitor'`:
+#     `'org.apache.druid.java.util.metrics.JvmMonitor'`:
 #       Reports JVM-related statistics.
-#     `'io.druid.segment.realtime.RealtimeMetricsMonitor'`:
-#       Reports statistics on Realtime nodes.
+#
+#   For druid older than 0.13 druid versions use the following instead
+#     `'io.druid.client.cache.CacheMonitor'`:
+#     `'com.metamx.metrics.JvmMonitor'`:
+#     `'io.druid.server.metrics.HistoricalMetricsMonitor'`:
+#     `'com.metamx.metrics.SysMonitor'`:
+#
 # 
 #   Defaults to `[]`.
 # 
@@ -438,9 +446,8 @@
 #
 # === Examples
 #
-#  class { 'druid': 
+#  class { 'druid':
 #    version     => '0.8.0',
-#    java_pkg    => 'openjdk-7-jre-headless',
 #    install_dir => '/usr/local/lib',
 #    config_dir  => '/etc/druid',
 #  }
@@ -451,7 +458,8 @@
 #
 class druid (
   $version                                  = $druid::params::version,
-  $nstall_java                              = $druid::params::install_java,
+  $package_name                             = $druid::params::package_name,
+  $install_java                             = $druid::params::install_java,
   $install_dir                              = $druid::params::install_dir,
   $config_dir                               = $druid::params::config_dir,
   $extra_classpaths                         = $druid::params::extra_classpaths,
@@ -633,7 +641,7 @@ class druid (
     'local3', 'local4', 'local5', 'local6', 'local7'
   ])
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
-  validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$'])
+  validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$', '^composing$', '^switching$'])
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
   validate_re($metadata_storage_type, ['mysql', 'postgres', 'derby'])
   validate_re($announcer_type, ['^lecagy$', '^batch$'])
@@ -652,6 +660,12 @@ class druid (
 
   validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
 
+  if versioncmp($version, '0.13.0') >= 0 {
+    validate_re($package_name, ['org.apache.druid'])
+  } else {
+    validate_re($package_name, ['io.druid'])
+  }
+
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)
     validate_integer($emitter_graphite_port)
@@ -664,19 +678,35 @@ class druid (
     require ::oracle_java
   }
 
-  $url = "http://static.druid.io/artifacts/releases/druid-${version}-bin.tar.gz"
-  archive { "/var/tmp/druid-${version}-bin.tar.gz":
+  if $package_name == 'org.apache.druid' {
+    $release_name = "apache-druid-${version}-incubating"
+    $url = "https://archive.apache.org/dist/incubator/druid/${version}-incubating/${release_name}-bin.tar.gz"
+  } else {
+    $release_name = "druid-${version}"
+    $url = "http://static.druid.io/artifacts/releases/${release_name}-bin.tar.gz"
+  }
+
+  archive { "/var/tmp/${release_name}-bin.tar.gz":
     ensure          => present,
     extract         => true,
     extract_path    => $install_dir,
     source          => $url,
     checksum_verify => false,
-    creates         => "${install_dir}/druid-${version}",
+    creates         => "${install_dir}/${release_name}",
     cleanup         => true,
   }
-  -> file { "${install_dir}/druid":
+
+  exec { "Remove all default extensions in directory ${install_dir}/${release_name}/extensions/":
+    path        => ['/usr/bin', '/usr/sbin', '/bin'],
+    command     => "rm -rf ${install_dir}/${release_name}/extensions/*",
+    subscribe   => Archive["/var/tmp/${release_name}-bin.tar.gz"],
+    refreshonly => true,
+  }
+
+  file { "${install_dir}/druid":
     ensure  => link,
-    target  => "${install_dir}/druid-${version}",
+    target  => "${install_dir}/${release_name}",
+    require => Archive["/var/tmp/${release_name}-bin.tar.gz"],
   }
 
   file { $config_dir:
@@ -686,6 +716,12 @@ class druid (
   file { "${config_dir}/common.runtime.properties":
     ensure  => file,
     content => template("${module_name}/common.runtime.properties.erb"),
+    require => File[$config_dir],
+  }
+
+  file { "${config_dir}/log4j2.xml":
+    ensure  => file,
+    content => template("${module_name}/log4j2.xml.erb"),
     require => File[$config_dir],
   }
 }
