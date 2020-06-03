@@ -81,6 +81,7 @@ class druid::params() {
   $cache_hosts                                        = []
   $cache_max_object_size                              = 52428800
   $cache_memcached_prefix                             = 'druid'
+  $cache_expire_after                                 = undef
   $selectors_indexing_service_name                    = 'druid/overlord'
   $selectors_coordinator_service_name                 = 'druid/coordinator'
   $announcer_type                                     = 'batch'
@@ -90,16 +91,7 @@ class druid::params() {
   $broker_port                                        = 8082
   $broker_service                                     = 'druid/broker'
   $broker_balancer_type                               = 'random'
-  $broker_cache_expiration                            = 2592000
-  $broker_cache_hosts                                 = []
-  $broker_cache_initial_size                          = 500000
-  $broker_cache_log_eviction_count                    = 0
-  $broker_cache_max_object_size                       = 52428800
-  $broker_cache_memcached_prefix                      = 'druid'
   $broker_cache_populate_cache                        = false
-  $broker_cache_size_in_bytes                         = 0
-  $broker_cache_timeout                               = 500
-  $broker_cache_type                                  = 'local'
   $broker_cache_uncacheable                           = ['groupBy', 'select']
   $broker_cache_use_cache                             = false
   $broker_http_num_connections                        = 5

@@ -253,6 +253,13 @@ druid.cache.maxObjectSize=<%= @cache_max_object_size %>
     <%- if @cache_memcached_prefix and @cache_memcached_prefix != '' -%>
 druid.cache.memcachedPrefix=<%= @cache_memcached_prefix %>
     <%- end -%>
+<% elsif @cache_type == 'caffeine' -%>
+    <%- if @cache_size_in_bytes and @cache_size_in_bytes != '' -%>
+druid.cache.sizeInBytes=<%= @cache_size_in_bytes %>
+    <%- end -%>
+    <%- if @cache_expire_after and @cache_expire_after != '' -%>
+druid.cache.expireAfter=<%= @cache_expire_after %>
+    <%- end -%>
 <% end -%>
 
 # Indexing Service Discovery

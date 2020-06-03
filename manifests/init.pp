@@ -415,6 +415,11 @@
 # 
 #   Defaults to `'druid'`.
 # 
+# [*cache_expire_after*]
+#   The time (in ms) after an access for which a cache entry may be expired.
+# 
+#   Defaults to `'none'`.
+# 
 # [*selectors_indexing_service_name*]
 #   The service name of the indexing service Overlord node. To start the
 #   Overlord with a different name, set it with this property.
@@ -539,6 +544,7 @@ class druid (
   $cache_hosts                              = $druid::params::cache_hosts,
   $cache_max_object_size                    = $druid::params::cache_max_object_size,
   $cache_memcached_prefix                   = $druid::params::cache_memcached_prefix,
+  $cache_expire_after                       = $druid::params::cache_expire_after,
   $selectors_indexing_service_name          = $druid::params::selectors_indexing_service_name,
   $selectors_coordinator_service_name       = $druid::params::selectors_coordinator_service_name,
   $announcer_type                           = $druid::params::announcer_type,
