@@ -64,14 +64,14 @@ druid.query.search.maxSearchLimit=<%= @query_search_max_search_limit %>
 <% end -%>
 
 # Caching
-<% if @cache_use_cache != '' -%>
-druid.broker.cache.useCache=<%= @cache_use_cache %>
+<% if @use_cache != '' -%>
+druid.broker.cache.useCache=<%= @use_cache %>
 <% end -%>
-<% if @cache_populate_cache != '' -%>
-druid.broker.cache.populateCache=<%= @cache_populate_cache %>
+<% if @populate_cache != '' -%>
+druid.broker.cache.populateCache=<%= @populate_cache %>
 <% end -%>
-<% if @cache_uncacheable and @cache_uncacheable != [] and @cache_uncacheable != '' -%>
-druid.broker.cache.unCacheable=<%= @cache_uncacheable.to_json %>
+<% if @uncacheable and @uncacheable != [] and @uncacheable != '' -%>
+druid.broker.cache.unCacheable=<%= @uncacheable.to_json %>
 <% end -%>
 
 # GroupBy Engine

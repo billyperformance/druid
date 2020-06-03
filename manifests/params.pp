@@ -90,9 +90,9 @@ class druid::params() {
   $broker_port                                        = 8082
   $broker_service                                     = 'druid/broker'
   $broker_balancer_type                               = 'random'
-  $broker_cache_populate_cache                        = false
-  $broker_cache_uncacheable                           = ['groupBy', 'select']
-  $broker_cache_use_cache                             = false
+  $broker_populate_cache                              = false
+  $broker_uncacheable                                 = ['groupBy', 'select']
+  $broker_use_cache                                   = false
   $broker_http_num_connections                        = 5
   $broker_http_read_timeout                           = 'PT15M'
   $broker_jvm_opts                                    = ['-server', '-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']

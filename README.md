@@ -680,7 +680,7 @@ Key prefix for all keys in Memcached.
 
 Default value: `'druid'`.
 
-##### `druid::broker::cache_populate_cache`
+##### `druid::broker::populate_cache`
 
 Populate the cache on the broker.
 
@@ -712,13 +712,13 @@ Valid values:
 
 Default value: `'local'`.
 
-##### `druid::broker::cache_uncacheable`
+##### `druid::broker::uncacheable`
 
 All query types to not cache.
 
 Default value: `['groupBy', 'select']`.
 
-##### `druid::broker::cache_use_cache`
+##### `druid::broker::use_cache`
 
 Enable the cache on the broker.
 
