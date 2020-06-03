@@ -80,6 +80,7 @@ describe 'druid::broker', :type => 'class' do
         :balancer_type                        => 'connectionCount',
         :cache_uncacheable                    => ['groupBy'],
         :cache_use_cache                      => true,
+        :cache_populate_cache                 => true,
         :http_num_connections                 => 20,
         :http_read_timeout                    => 'PT30M',
         :processing_buffer_size_bytes         => 2147483648,
@@ -99,7 +100,7 @@ describe 'druid::broker', :type => 'class' do
     end
 
     it {
-      should contain_file('/etc/druid/broker/runtime.properties').with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Node Configs\ndruid.host=127.0.0.1\ndruid.port=8092\ndruid.service=druid-test/broker\n\n# Query Configs\ndruid.broker.balancer.type=connectionCount\ndruid.broker.select.tier=lowestPriority\ndruid.broker.select.tier.custom.priorities=[1,10]\ndruid.server.http.numThreads=15\ndruid.server.http.maxIdleTime=PT10m\ndruid.broker.http.numConnections=20\ndruid.broker.http.readTimeout=PT30M\ndruid.broker.retryPolicy.numTries=3\ndruid.processing.buffer.sizeBytes=2147483648\ndruid.processing.formatString=test-processing-%s\ndruid.processing.numThreads=2\ndruid.processing.columnCache.sizeBytes=10\ndruid.query.groupBy.singleThreaded=true\ndruid.query.groupBy.maxIntermediateRows=50100\ndruid.query.groupBy.maxResults=500100\ndruid.query.search.maxSearchLimit=1001\n\n# Caching\ndruid.broker.cache.useCache=true\ndruid.broker.cache.populateCache=false\ndruid.broker.cache.unCacheable=[\"groupBy\"]\n\n# GroupBy Engine\n\n")
+      should contain_file('/etc/druid/broker/runtime.properties').with_content("# This file is managed by Puppet\n# MODIFICATION WILL BE OVERWRITTEN\n\n# Node Configs\ndruid.host=127.0.0.1\ndruid.port=8092\ndruid.service=druid-test/broker\n\n# Query Configs\ndruid.broker.balancer.type=connectionCount\ndruid.broker.select.tier=lowestPriority\ndruid.broker.select.tier.custom.priorities=[1,10]\ndruid.server.http.numThreads=15\ndruid.server.http.maxIdleTime=PT10m\ndruid.broker.http.numConnections=20\ndruid.broker.http.readTimeout=PT30M\ndruid.broker.retryPolicy.numTries=3\ndruid.processing.buffer.sizeBytes=2147483648\ndruid.processing.formatString=test-processing-%s\ndruid.processing.numThreads=2\ndruid.processing.columnCache.sizeBytes=10\ndruid.query.groupBy.singleThreaded=true\ndruid.query.groupBy.maxIntermediateRows=50100\ndruid.query.groupBy.maxResults=500100\ndruid.query.search.maxSearchLimit=1001\n\n# Caching\ndruid.broker.cache.useCache=true\ndruid.broker.cache.populateCache=true\ndruid.broker.cache.unCacheable=[\"groupBy\"]\n\n# GroupBy Engine\n\n")
     }
   end
 

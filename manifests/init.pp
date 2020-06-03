@@ -414,8 +414,9 @@
 # 
 # [*cache_expire_after*]
 #   The time (in ms) after an access for which a cache entry may be expired.
+#   Only for cache type caffeine
 # 
-#   Defaults to `'none'`.
+#   Defaults to `undef`. (No time limit)
 # 
 # [*selectors_indexing_service_name*]
 #   The service name of the indexing service Overlord node. To start the
@@ -634,6 +635,10 @@ class druid (
   validate_integer($cache_max_object_size)
   validate_integer($announcer_segments_per_node)
   validate_integer($announcer_max_bytes_per_node)
+
+  if $cache_expire_after {
+    validate_integer($cache_expire_after)
+  }
 
   validate_absolute_path($install_dir, $config_dir, $storage_directory)
 
