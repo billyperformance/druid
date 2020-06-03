@@ -372,9 +372,6 @@
 # 
 #   Defaults to `'local'`.
 # 
-# [*cache_uncacheable*]
-#   All query types to not cache.
-# 
 # [*cache_size_in_bytes*]
 #   Maximum local cache size in bytes. Zero disables caching.
 # 
@@ -535,7 +532,6 @@ class druid (
   $cassandra_host                           = $druid::params::cassandra_host,
   $cassandra_keyspace                       = $druid::params::cassandra_keyspace,
   $cache_type                               = $druid::params::cache_type,
-  $cache_uncacheable                        = $druid::params::cache_uncacheable,
   $cache_size_in_bytes                      = $druid::params::cache_size_in_bytes,
   $cache_initial_size                       = $druid::params::cache_initial_size,
   $cache_log_eviction_count                 = $druid::params::cache_log_eviction_count,
@@ -599,7 +595,6 @@ class druid (
     $cassandra_host,
     $cassandra_keyspace,
     $cache_type,
-    $cache_uncacheable,
     $cache_memcached_prefix,
     $selectors_indexing_service_name,
     $selectors_coordinator_service_name,

@@ -251,10 +251,6 @@ Valid values: `'local'` or `'memcached'`.
 
 Default value: `'local'`. 
 
-##### `druid::cache_uncacheable`
-
-All query types to not cache. 
-
 ##### `druid::cassandra_host`
 
 Cassandra host to access for deep storage. 

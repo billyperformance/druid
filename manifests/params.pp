@@ -72,7 +72,6 @@ class druid::params() {
   $cassandra_host                                     = ''
   $cassandra_keyspace                                 = ''
   $cache_type                                         = 'local'
-  $cache_uncacheable                                  = undef
   $cache_size_in_bytes                                = 0
   $cache_initial_size                                 = 500000
   $cache_log_eviction_count                           = 0

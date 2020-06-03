@@ -224,9 +224,6 @@ druid.storage.keyspace=<%= @cassandra_keyspace %>
 <% if @cache_type and @cache_type != '' -%>
 druid.cache.type=<%= @cache_type %>
 <% end -%>
-<% if @cache_uncacheable and @cache_uncacheable != '' -%>
-druid.cache.unCacheable=<%= @cache_uncacheable %>
-<% end -%>
 <% if @cache_type == 'local' -%>
     <%- if @cache_size_in_bytes and @cache_size_in_bytes != '' -%>
 druid.cache.sizeInBytes=<%= @cache_size_in_bytes %>
