@@ -372,9 +372,6 @@
 # 
 #   Defaults to `'local'`.
 # 
-# [*cache_uncacheable*]
-#   All query types to not cache.
-# 
 # [*cache_size_in_bytes*]
 #   Maximum local cache size in bytes. Zero disables caching.
 # 
@@ -414,6 +411,12 @@
 #   Key prefix for all keys in Memcached.
 # 
 #   Defaults to `'druid'`.
+# 
+# [*cache_expire_after*]
+#   The time (in ms) after an access for which a cache entry may be expired.
+#   Only for cache type caffeine
+# 
+#   Defaults to `undef`. (No time limit)
 # 
 # [*selectors_indexing_service_name*]
 #   The service name of the indexing service Overlord node. To start the
@@ -530,7 +533,6 @@ class druid (
   $cassandra_host                           = $druid::params::cassandra_host,
   $cassandra_keyspace                       = $druid::params::cassandra_keyspace,
   $cache_type                               = $druid::params::cache_type,
-  $cache_uncacheable                        = $druid::params::cache_uncacheable,
   $cache_size_in_bytes                      = $druid::params::cache_size_in_bytes,
   $cache_initial_size                       = $druid::params::cache_initial_size,
   $cache_log_eviction_count                 = $druid::params::cache_log_eviction_count,
@@ -539,6 +541,7 @@ class druid (
   $cache_hosts                              = $druid::params::cache_hosts,
   $cache_max_object_size                    = $druid::params::cache_max_object_size,
   $cache_memcached_prefix                   = $druid::params::cache_memcached_prefix,
+  $cache_expire_after                       = $druid::params::cache_expire_after,
   $selectors_indexing_service_name          = $druid::params::selectors_indexing_service_name,
   $selectors_coordinator_service_name       = $druid::params::selectors_coordinator_service_name,
   $announcer_type                           = $druid::params::announcer_type,
@@ -593,7 +596,6 @@ class druid (
     $cassandra_host,
     $cassandra_keyspace,
     $cache_type,
-    $cache_uncacheable,
     $cache_memcached_prefix,
     $selectors_indexing_service_name,
     $selectors_coordinator_service_name,
@@ -633,6 +635,10 @@ class druid (
   validate_integer($cache_max_object_size)
   validate_integer($announcer_segments_per_node)
   validate_integer($announcer_max_bytes_per_node)
+
+  if $cache_expire_after {
+    validate_integer($cache_expire_after)
+  }
 
   validate_absolute_path($install_dir, $config_dir, $storage_directory)
 

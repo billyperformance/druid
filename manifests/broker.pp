@@ -61,7 +61,7 @@
 #
 #   Default value: `'druid'`.
 #
-# [*cache_populate_cache*]
+# [*populate_cache*]
 #   Populate the cache on the broker.
 #
 #   Valid values: `true`, `false`.
@@ -89,12 +89,12 @@
 #
 #   Default value: `'local'`.
 #
-# [*cache_uncacheable*]
+# [*uncacheable*]
 #   All query types to not cache.
 #
 #   Default value: `['groupBy', 'select']`.
 #
-# [*cache_use_cache*]
+# [*use_cache*]
 #   Enable the cache on the broker.
 #
 #   Valid values: `true`, `false`.
@@ -238,18 +238,9 @@ class druid::broker (
   $port                                 = $druid::params::broker_port,
   $service                              = $druid::params::broker_service,
   $balancer_type                        = $druid::params::broker_balancer_type,
-  $cache_expiration                     = $druid::params::broker_cache_expiration,
-  $cache_hosts                          = $druid::params::broker_cache_hosts,
-  $cache_initial_size                   = $druid::params::broker_cache_initial_size,
-  $cache_log_eviction_count             = $druid::params::broker_cache_log_eviction_count,
-  $cache_max_object_size                = $druid::params::broker_cache_max_object_size,
-  $cache_memcached_prefix               = $druid::params::broker_cache_memcached_prefix,
-  $cache_populate_cache                 = $druid::params::broker_cache_populate_cache,
-  $cache_size_in_bytes                  = $druid::params::broker_cache_size_in_bytes,
-  $cache_timeout                        = $druid::params::broker_cache_timeout,
-  $cache_type                           = $druid::params::broker_cache_type,
-  $cache_uncacheable                    = $druid::params::broker_cache_uncacheable,
-  $cache_use_cache                      = $druid::params::broker_cache_use_cache,
+  $populate_cache                       = $druid::params::broker_populate_cache,
+  $uncacheable                          = $druid::params::broker_uncacheable,
+  $use_cache                            = $druid::params::broker_use_cache,
   $http_num_connections                 = $druid::params::broker_http_num_connections,
   $http_read_timeout                    = $druid::params::broker_http_read_timeout,
   $jvm_opts                             = $druid::params::broker_jvm_opts,
@@ -306,14 +297,14 @@ class druid::broker (
   }
 
   validate_bool(
-    $cache_populate_cache,
-    $cache_use_cache,
+    $populate_cache,
+    $use_cache,
     $query_group_by_single_threaded,
   )
 
   validate_array(
     $cache_hosts,
-    $cache_uncacheable,
+    $uncacheable,
     $jvm_opts,
     $select_tier_custom_priorities,
   )
