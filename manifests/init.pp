@@ -170,7 +170,7 @@
 #     `'org.apache.druid.java.util.metrics.JvmMonitor'`:
 #       Reports JVM-related statistics.
 #
-#   For druid older than 0.13 druid versions use the following instead
+#   For druid older than version 0.13 use the following instead
 #     `'io.druid.client.cache.CacheMonitor'`:
 #     `'com.metamx.metrics.JvmMonitor'`:
 #     `'io.druid.server.metrics.HistoricalMetricsMonitor'`:
@@ -242,7 +242,8 @@
 #   Defaults to `100`.
 # 
 # [*emitter_graphite_eventConverter*]
-#   Filter and converter of druid events to graphite event. Must be a key-value object, as it will be printed as JSON.
+#   Filter and converter of druid events to graphite event.
+#   Must be a key-value object, as it will be printed as JSON.
 #   Only applies if emitter is set to `'graphite'`
 # 
 #   Defaults to `undef`.
@@ -323,7 +324,7 @@
 # [*storage_type*]
 #   The type of deep storage to use.
 # 
-#   Valid values are: `'local'`, `'noop'`, `'s3'`, `'hdfs'`, or `'c*'` 
+#   Valid values are: `'local'`, `'noop'`, `'s3'`, `'hdfs'`, or `'c*'`
 # 
 #   Defaults to `'local'`.
 # 
@@ -643,13 +644,13 @@ class druid (
   validate_absolute_path($install_dir, $config_dir, $storage_directory)
 
   validate_re($syslog_facility, [
-    'daemon', 'user', 'local0', 'local1', 'local2',
-    'local3', 'local4', 'local5', 'local6', 'local7'
+    '^daemon$', '^user$', '^local0$', '^local1$', '^local2$',
+    '^local3$', '^local4$', '^local5$', '^local6$', '^local7$'
   ])
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
   validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$', '^composing$', '^switching$'])
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
-  validate_re($metadata_storage_type, ['mysql', 'postgres', 'derby'])
+  validate_re($metadata_storage_type, ['^mysql$', '^postgres$', '^derby$'])
   validate_re($announcer_type, ['^lecagy$', '^batch$'])
   validate_re($emitter_logging_logger_class, [
     '^HttpPostEmitter$',
@@ -664,7 +665,7 @@ class druid (
     '^erro$',
   ])
 
-  validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
+  validate_re($emitter, ['^noop$', '^logging$', '^http$', '^graphite$'])
 
   if versioncmp($version, '0.13.0') >= 0 {
     validate_re($package_name, ['org.apache.druid'])
