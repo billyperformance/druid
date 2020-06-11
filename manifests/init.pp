@@ -130,8 +130,7 @@
 #   Specifies the type of logging used.
 # 
 #   Valid values for version >= 0.13:
-#   `'noop'`, `'file'`, `'emitter'`, `'slf4j'`,
-#   `'filtered'`, `'composing'`, `'switching'`
+#   `'noop'`, `'file'`, `'emitter'`, `'slf4j'`, `'filtered'`
 # 
 #   Valid values for version < 0.13:
 #   `'noop'`, `'file'`, `'emitter'`, `'slf4j'`
@@ -396,7 +395,11 @@
 # [*cache_type*]
 #   The type of cache to use for queries.
 # 
-#   Valid values: `'local'` or `'memcached'`.
+#   Valid values for version >= 0.13:
+#   `'local'`, `'memcached'`, `'caffeine'`.
+# 
+#   Valid values for version < 0.13:
+#   `'local'`, `'memcached'`.
 # 
 #   Defaults to `'local'`.
 # 
@@ -441,8 +444,8 @@
 #   Defaults to `'druid'`.
 # 
 # [*cache_expire_after*]
+#   (Only applicable for cache type 'caffeine')
 #   The time (in ms) after an access for which a cache entry may be expired.
-#   Only for cache type caffeine
 # 
 #   Defaults to `undef`. (No time limit)
 # 
@@ -586,6 +589,9 @@ class druid (
   $s3_logs_bucket                                 = $druid::params::indexing_s3_logs_bucket,
   $s3_logs_prefix                                 = $druid::params::indexing_s3_logs_prefix,
 ) inherits druid::params {
+
+  ### BEGIN VALIDATIONS ###
+
   validate_string(
     $extensions_local_repository,
     $zk_service_host,
@@ -626,7 +632,6 @@ class druid (
     $hdfs_directory,
     $cassandra_host,
     $cassandra_keyspace,
-    $cache_type,
     $cache_memcached_prefix,
     $selectors_indexing_service_name,
     $selectors_coordinator_service_name,
@@ -667,10 +672,6 @@ class druid (
   validate_integer($announcer_segments_per_node)
   validate_integer($announcer_max_bytes_per_node)
 
-  if $cache_expire_after {
-    validate_integer($cache_expire_after)
-  }
-
   validate_absolute_path($install_dir, $config_dir, $storage_directory)
 
   validate_re($syslog_facility, [
@@ -680,19 +681,13 @@ class druid (
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
 
   if versioncmp($version, '0.13.0') >= 0 {
-    validate_re($request_logging_type, [
-      '^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$', '^composing$', '^switching$'
-    ])
+    validate_re($package_name, ['^org.apache.druid$'])
+    validate_re($cache_type, ['^local$', '^memcached$', '^caffeine$'])
+    validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$'])
   } else {
-    validate_re($request_logging_type, [
-      '^noop$', '^file$', '^emitter$', '^slf4j$'
-    ])
-  }
-
-  if $request_logging_type == 'filtered' {
-    validate_integer($request_logging_query_time_threshold_ms)
-    validate_integer($request_logging_sql_query_time_threshold_ms)
-    validate_hash($request_logging_delegate_type)
+    validate_re($package_name, ['^io.druid$'])
+    validate_re($cache_type, ['^local$', '^memcached$'])
+    validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$'])
   }
 
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
@@ -713,12 +708,6 @@ class druid (
 
   validate_re($emitter, ['^noop$', '^logging$', '^http$', '^graphite$'])
 
-  if versioncmp($version, '0.13.0') >= 0 {
-    validate_re($package_name, ['org.apache.druid'])
-  } else {
-    validate_re($package_name, ['io.druid'])
-  }
-
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)
     validate_integer($emitter_graphite_port)
@@ -726,6 +715,18 @@ class druid (
     validate_hash($emitter_graphite_eventConverter)
     validate_integer($emitter_graphite_flushPeriod)
   }
+
+  if $request_logging_type == 'filtered' {
+    validate_integer($request_logging_query_time_threshold_ms)
+    validate_integer($request_logging_sql_query_time_threshold_ms)
+    validate_hash($request_logging_delegate_type)
+  }
+
+  if $cache_type == 'caffeine' and $cache_expire_after {
+    validate_integer($cache_expire_after)
+  }
+
+  ### END VALIDATIONS ###
 
   if $install_java {
     require ::oracle_java

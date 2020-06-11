@@ -42,11 +42,11 @@ describe 'druid', :type => 'class' do
   context 'On generic system with custom install parameters' do
     let(:facts) do
       {
-        :memorysize => '10 GB',
-        :ipaddress => '127.0.0.1',
-        :osfamily => 'Darwin',
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
         :operatingsystem => 'Darwin',
-        :architecture => 'x86_64',
+        :architecture    => 'x86_64',
       }
     end
     let(:params) do
@@ -99,7 +99,7 @@ describe 'druid', :type => 'class' do
         :package_name => 'org.apache.druid',
       }
     end
-    it { should compile.and_raise_error(/"org.apache.druid" does not match \["io.druid"\]/) }
+    it { should compile.and_raise_error(/"org.apache.druid" does not match \["\^io.druid\$"\]/) }
   end
 
   context 'Check that you cannot set io.druid with a version >= 0.13.0' do
@@ -118,7 +118,7 @@ describe 'druid', :type => 'class' do
         :package_name => 'io.druid',
       }
     end
-    it { should compile.and_raise_error(/"io.druid" does not match \["org.apache.druid"\]/) }
+    it { should compile.and_raise_error(/"io.druid" does not match \["\^org.apache.druid\$"\]/) }
   end
 
   context 'On generic system with custom druid parameters' do
@@ -219,11 +219,11 @@ describe 'druid', :type => 'class' do
   context 'On base system with local as cache' do
     let(:facts) do
       {
-        :memorysize => '10 GB',
-        :ipaddress => '127.0.0.1',
-        :osfamily => 'Darwin',
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
         :operatingsystem => 'Darwin',
-        :architecture => 'x86_64',
+        :architecture    => 'x86_64',
       }
     end
 
@@ -244,11 +244,11 @@ describe 'druid', :type => 'class' do
   context 'On base system with memcached as cache' do
     let(:facts) do
       {
-        :memorysize => '10 GB',
-        :ipaddress => '127.0.0.1',
-        :osfamily => 'Darwin',
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
         :operatingsystem => 'Darwin',
-        :architecture => 'x86_64',
+        :architecture    => 'x86_64',
       }
     end
 
@@ -271,16 +271,18 @@ describe 'druid', :type => 'class' do
   context 'On base system with caffeine as cache' do
     let(:facts) do
       {
-        :memorysize => '10 GB',
-        :ipaddress => '127.0.0.1',
-        :osfamily => 'Darwin',
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
         :operatingsystem => 'Darwin',
-        :architecture => 'x86_64',
+        :architecture    => 'x86_64',
       }
     end
 
     let(:params) do
       {
+        :version                              => '0.14.2',
+        :package_name                         => 'org.apache.druid',
         :cache_size_in_bytes                  => 2048,
         :cache_expire_after                   => 300,
         :cache_type                           => 'caffeine',
@@ -295,11 +297,11 @@ describe 'druid', :type => 'class' do
   context 'On base system with filtered as request logging type' do
     let(:facts) do
       {
-        :memorysize => '10 GB',
-        :ipaddress => '127.0.0.1',
-        :osfamily => 'Darwin',
+        :memorysize      => '10 GB',
+        :ipaddress       => '127.0.0.1',
+        :osfamily        => 'Darwin',
         :operatingsystem => 'Darwin',
-        :architecture => 'x86_64',
+        :architecture    => 'x86_64',
       }
     end
 
