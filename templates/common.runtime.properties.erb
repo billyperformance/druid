@@ -84,6 +84,16 @@ druid.request.logging.type=<%= @request_logging_type %>
 druid.request.logging.dir=<%= @request_logging_dir %>
 <% elsif @request_logging_type == 'emitter' and @request_logging_feed and @request_logging_feed != '' -%>
 druid.request.logging.feed=<%= @request_logging_feed %>
+<% elsif @request_logging_type == 'filtered' -%>
+    <%- if @request_logging_query_time_threshold_ms and @request_logging_query_time_threshold_ms != '' -%>
+druid.request.logging.queryTimeThresholdMs=<%= @request_logging_query_time_threshold_ms %>
+    <%- end -%>
+    <%- if @request_logging_sql_query_time_threshold_ms and @request_logging_sql_query_time_threshold_ms != '' -%>
+druid.request.logging.sqlQueryTimeThresholdMs=<%= @request_logging_sql_query_time_threshold_ms %>
+    <%- end -%>
+    <%- if @request_logging_delegate_type and @request_logging_delegate_type != '' -%>
+druid.request.logging.delegate=<%= @request_logging_delegate_type.to_json %>
+    <%- end -%>
 <% end -%>
 
 # Enabling Metrics

@@ -129,11 +129,16 @@
 # [*request_logging_type*]
 #   Specifies the type of logging used.
 # 
-#   Valid values: `'noop'`, `'file'`, `'emitter'`.
+#   Valid values for version >= 0.13:
+#   `'noop'`, `'file'`, `'emitter'`, `'slf4j'`, `'filtered'`
+# 
+#   Valid values for version < 0.13:
+#   `'noop'`, `'file'`, `'emitter'`, `'slf4j'`
 # 
 #   Defaults to `'noop'`.
 # 
 # [*request_logging_dir*]
+#   (Only applicable for logging type 'file')
 #   Historical and Broker nodes maintain request logs of all of the
 #   requests they get (interacton is via POST, so normal request logs don’t
 #   generally capture information about the actual query), this specifies the
@@ -142,9 +147,30 @@
 #   Defaults to `''`.
 # 
 # [*request_logging_feed*]
+#   (Only applicable for logging type 'emitter')
 #   Feed name for requests.
 # 
 #   Defaults to `'druid'`.
+# 
+# [*request_logging_query_time_threshold_ms*]
+#   (Only applicable for logging type 'filtered')
+#   Threshold value for query/time in milliseconds.
+# 
+#   Defaults to `'0'` i.e no filtering.
+# 
+# [*request_logging_sql_query_time_threshold_ms*]
+#   (Only applicable for logging type 'filtered')
+#   Threshold value for sqlQuery/time in milliseconds.
+# 
+#   Defaults to `'0'` i.e no filtering.
+# 
+# [*request_logging_delegate_type*]
+#   (Only applicable for logging type 'filtered')
+#   Type of delegate request logger to log requests.
+#   Must be a hash in which a `'type'` of request logging is defined
+#   and any other required variables (`'dir'` if using file type for example)
+#
+#   Defaults to `'undef'`.
 # 
 # [*monitoring_emission_period*]
 #   How often metrics are emitted.
@@ -170,7 +196,7 @@
 #     `'org.apache.druid.java.util.metrics.JvmMonitor'`:
 #       Reports JVM-related statistics.
 #
-#   For druid older than 0.13 druid versions use the following instead
+#   For druid older than version 0.13 use the following instead
 #     `'io.druid.client.cache.CacheMonitor'`:
 #     `'com.metamx.metrics.JvmMonitor'`:
 #     `'io.druid.server.metrics.HistoricalMetricsMonitor'`:
@@ -242,7 +268,8 @@
 #   Defaults to `100`.
 # 
 # [*emitter_graphite_eventConverter*]
-#   Filter and converter of druid events to graphite event. Must be a key-value object, as it will be printed as JSON.
+#   Filter and converter of druid events to graphite event.
+#   Must be a key-value object, as it will be printed as JSON.
 #   Only applies if emitter is set to `'graphite'`
 # 
 #   Defaults to `undef`.
@@ -323,7 +350,7 @@
 # [*storage_type*]
 #   The type of deep storage to use.
 # 
-#   Valid values are: `'local'`, `'noop'`, `'s3'`, `'hdfs'`, or `'c*'` 
+#   Valid values are: `'local'`, `'noop'`, `'s3'`, `'hdfs'`, or `'c*'`
 # 
 #   Defaults to `'local'`.
 # 
@@ -368,7 +395,11 @@
 # [*cache_type*]
 #   The type of cache to use for queries.
 # 
-#   Valid values: `'local'` or `'memcached'`.
+#   Valid values for version >= 0.13:
+#   `'local'`, `'memcached'`, `'caffeine'`.
+# 
+#   Valid values for version < 0.13:
+#   `'local'`, `'memcached'`.
 # 
 #   Defaults to `'local'`.
 # 
@@ -413,8 +444,8 @@
 #   Defaults to `'druid'`.
 # 
 # [*cache_expire_after*]
+#   (Only applicable for cache type 'caffeine')
 #   The time (in ms) after an access for which a cache entry may be expired.
-#   Only for cache type caffeine
 # 
 #   Defaults to `undef`. (No time limit)
 # 
@@ -460,101 +491,107 @@
 # Tyler Yahn <codingalias@gmail.com>
 #
 class druid (
-  $version                                  = $druid::params::version,
-  $package_name                             = $druid::params::package_name,
-  $install_java                             = $druid::params::install_java,
-  $install_dir                              = $druid::params::install_dir,
-  $config_dir                               = $druid::params::config_dir,
-  $extra_classpaths                         = $druid::params::extra_classpaths,
-  $syslog_facility                          = $druid::params::syslog_facility,
-  $extensions_remote_repositories           = $druid::params::extensions_remote_repositories,
-  $extensions_local_repository              = $druid::params::extensions_local_repository,
-  $extensions_coordinates                   = $druid::params::extensions_coordinates,
-  $extensions_hadoop_deps_dir               = $druid::params::extensions_hadoop_deps_dir,
-  $extensions_loadlist                      = $druid::params::extensions_loadlist,
-  $extensions_default_version               = $druid::params::extensions_default_version,
-  $extensions_search_current_classloader    = $druid::params::extensions_search_current_classloader,
-  $log_properties                           = $druid::params::log_properties,
-  $zk_service_host                          = $druid::params::zk_service_host,
-  $zk_service_session_timeout_ms            = $druid::params::zk_service_session_timeout_ms,
-  $curator_compress                         = $druid::params::curator_compress,
-  $zk_paths_base                            = $druid::params::zk_paths_base,
-  $zk_paths_properties_path                 = $druid::params::zk_paths_properties_path,
-  $zk_paths_announcements_path              = $druid::params::zk_paths_announcements_path,
-  $zk_paths_live_segments_path              = $druid::params::zk_paths_live_segments_path,
-  $zk_paths_load_queue_path                 = $druid::params::zk_paths_load_queue_path,
-  $zk_paths_coordinator_path                = $druid::params::zk_paths_coordinator_path,
-  $zk_paths_indexer_base                    = $druid::params::zk_paths_indexer_base,
-  $zk_paths_indexer_announcements_path      = $druid::params::zk_paths_indexer_announcements_path,
-  $zk_paths_indexer_tasks_path              = $druid::params::zk_paths_indexer_tasks_path,
-  $zk_paths_indexer_status_path             = $druid::params::zk_paths_indexer_status_path,
-  $zk_paths_indexer_leader_latch_path       = $druid::params::zk_paths_indexer_leader_latch_path,
-  $discovery_curator_path                   = $druid::params::discovery_curator_path,
-  $request_logging_type                     = $druid::params::request_logging_type,
-  $request_logging_dir                      = $druid::params::request_logging_dir,
-  $request_logging_feed                     = $druid::params::request_logging_feed,
-  $monitoring_emission_period               = $druid::params::monitoring_emission_period,
-  $monitoring_monitors                      = $druid::params::monitoring_monitors,
-  $emitter                                  = $druid::params::emitter,
-  $emitter_logging_logger_class             = $druid::params::emitter_logging_logger_class,
-  $emitter_logging_log_level                = $druid::params::emitter_logging_log_level,
-  $emitter_http_time_out                    = $druid::params::emitter_http_time_out,
-  $emitter_http_flush_millis                = $druid::params::emitter_http_flush_millis,
-  $emitter_http_flush_count                 = $druid::params::emitter_http_flush_count,
-  $emitter_http_recipient_base_url          = $druid::params::emitter_http_recipient_base_url,
-  $emitter_graphite_hostname                = $druid::params::emitter_graphite_hostname,
-  $emitter_graphite_port                    = $druid::params::emitter_graphite_port,
-  $emitter_graphite_batchSize               = $druid::params::emitter_graphite_batchSize,
-  $emitter_graphite_eventConverter          = $druid::params::emitter_graphite_eventConverter,
-  $emitter_graphite_flushPeriod             = $druid::params::emitter_graphite_flushPeriod,
-  $metadata_storage_type                    = $druid::params::metadata_storage_type,
-  $metadata_storage_connector_uri           = $druid::params::metadata_storage_connector_uri,
-  $metadata_storage_connector_user          = $druid::params::metadata_storage_connector_user,
-  $metadata_storage_connector_password      = $druid::params::metadata_storage_connector_password,
-  $metadata_storage_connector_create_tables = $druid::params::metadata_storage_connector_create_tables,
-  $metadata_storage_tables_base             = $druid::params::metadata_storage_tables_base,
-  $metadata_storage_tables_segment_table    = $druid::params::metadata_storage_tables_segment_table,
-  $metadata_storage_tables_rule_table       = $druid::params::metadata_storage_tables_rule_table,
-  $metadata_storage_tables_config_table     = $druid::params::metadata_storage_tables_config_table,
-  $metadata_storage_tables_tasks            = $druid::params::metadata_storage_tables_tasks,
-  $metadata_storage_tables_task_log         = $druid::params::metadata_storage_tables_task_log,
-  $metadata_storage_tables_task_lock        = $druid::params::metadata_storage_tables_task_lock,
-  $metadata_storage_tables_audit            = $druid::params::metadata_storage_tables_audit,
-  $storage_type                             = $druid::params::storage_type,
-  $storage_directory                        = $druid::params::storage_directory,
-  $s3_access_key                            = $druid::params::s3_access_key,
-  $s3_secret_key                            = $druid::params::s3_secret_key,
-  $s3_bucket                                = $druid::params::s3_bucket,
-  $s3_base_key                              = $druid::params::s3_base_key,
-  $storage_disable_acl                      = $druid::params::storage_disable_acl,
-  $s3_archive_bucket                        = $druid::params::s3_archive_bucket,
-  $s3_archive_base_key                      = $druid::params::s3_archive_base_key,
-  $hdfs_directory                           = $druid::params::hdfs_directory,
-  $cassandra_host                           = $druid::params::cassandra_host,
-  $cassandra_keyspace                       = $druid::params::cassandra_keyspace,
-  $cache_type                               = $druid::params::cache_type,
-  $cache_size_in_bytes                      = $druid::params::cache_size_in_bytes,
-  $cache_initial_size                       = $druid::params::cache_initial_size,
-  $cache_log_eviction_count                 = $druid::params::cache_log_eviction_count,
-  $cache_expiration                         = $druid::params::cache_expiration,
-  $cache_timeout                            = $druid::params::cache_timeout,
-  $cache_hosts                              = $druid::params::cache_hosts,
-  $cache_max_object_size                    = $druid::params::cache_max_object_size,
-  $cache_memcached_prefix                   = $druid::params::cache_memcached_prefix,
-  $cache_expire_after                       = $druid::params::cache_expire_after,
-  $selectors_indexing_service_name          = $druid::params::selectors_indexing_service_name,
-  $selectors_coordinator_service_name       = $druid::params::selectors_coordinator_service_name,
-  $announcer_type                           = $druid::params::announcer_type,
-  $announcer_segments_per_node              = $druid::params::announcer_segments_per_node,
-  $announcer_max_bytes_per_node             = $druid::params::announcer_max_bytes_per_node,
-  $azure_logs_container                     = $druid::params::indexing_azure_logs_container,
-  $azure_logs_prefix                        = $druid::params::indexing_azure_logs_prefix,
-  $hdfs_logs_directory                      = $druid::params::indexing_hdfs_logs_directory,
-  $local_logs_directory                     = $druid::params::indexing_local_logs_directory,
-  $logs_type                                = $druid::params::indexing_logs_type,
-  $s3_logs_bucket                           = $druid::params::indexing_s3_logs_bucket,
-  $s3_logs_prefix                           = $druid::params::indexing_s3_logs_prefix,
+  $version                                        = $druid::params::version,
+  $package_name                                   = $druid::params::package_name,
+  $install_java                                   = $druid::params::install_java,
+  $install_dir                                    = $druid::params::install_dir,
+  $config_dir                                     = $druid::params::config_dir,
+  $extra_classpaths                               = $druid::params::extra_classpaths,
+  $syslog_facility                                = $druid::params::syslog_facility,
+  $extensions_remote_repositories                 = $druid::params::extensions_remote_repositories,
+  $extensions_local_repository                    = $druid::params::extensions_local_repository,
+  $extensions_coordinates                         = $druid::params::extensions_coordinates,
+  $extensions_hadoop_deps_dir                     = $druid::params::extensions_hadoop_deps_dir,
+  $extensions_loadlist                            = $druid::params::extensions_loadlist,
+  $extensions_default_version                     = $druid::params::extensions_default_version,
+  $extensions_search_current_classloader          = $druid::params::extensions_search_current_classloader,
+  $log_properties                                 = $druid::params::log_properties,
+  $zk_service_host                                = $druid::params::zk_service_host,
+  $zk_service_session_timeout_ms                  = $druid::params::zk_service_session_timeout_ms,
+  $curator_compress                               = $druid::params::curator_compress,
+  $zk_paths_base                                  = $druid::params::zk_paths_base,
+  $zk_paths_properties_path                       = $druid::params::zk_paths_properties_path,
+  $zk_paths_announcements_path                    = $druid::params::zk_paths_announcements_path,
+  $zk_paths_live_segments_path                    = $druid::params::zk_paths_live_segments_path,
+  $zk_paths_load_queue_path                       = $druid::params::zk_paths_load_queue_path,
+  $zk_paths_coordinator_path                      = $druid::params::zk_paths_coordinator_path,
+  $zk_paths_indexer_base                          = $druid::params::zk_paths_indexer_base,
+  $zk_paths_indexer_announcements_path            = $druid::params::zk_paths_indexer_announcements_path,
+  $zk_paths_indexer_tasks_path                    = $druid::params::zk_paths_indexer_tasks_path,
+  $zk_paths_indexer_status_path                   = $druid::params::zk_paths_indexer_status_path,
+  $zk_paths_indexer_leader_latch_path             = $druid::params::zk_paths_indexer_leader_latch_path,
+  $discovery_curator_path                         = $druid::params::discovery_curator_path,
+  $request_logging_type                           = $druid::params::request_logging_type,
+  $request_logging_dir                            = $druid::params::request_logging_dir,
+  $request_logging_feed                           = $druid::params::request_logging_feed,
+  $request_logging_query_time_threshold_ms        = $druid::params::request_logging_query_time_threshold_ms,
+  $request_logging_sql_query_time_threshold_ms    = $druid::params::request_logging_sql_query_time_threshold_ms,
+  $request_logging_delegate_type                  = $druid::params::request_logging_delegate_type,
+  $monitoring_emission_period                     = $druid::params::monitoring_emission_period,
+  $monitoring_monitors                            = $druid::params::monitoring_monitors,
+  $emitter                                        = $druid::params::emitter,
+  $emitter_logging_logger_class                   = $druid::params::emitter_logging_logger_class,
+  $emitter_logging_log_level                      = $druid::params::emitter_logging_log_level,
+  $emitter_http_time_out                          = $druid::params::emitter_http_time_out,
+  $emitter_http_flush_millis                      = $druid::params::emitter_http_flush_millis,
+  $emitter_http_flush_count                       = $druid::params::emitter_http_flush_count,
+  $emitter_http_recipient_base_url                = $druid::params::emitter_http_recipient_base_url,
+  $emitter_graphite_hostname                      = $druid::params::emitter_graphite_hostname,
+  $emitter_graphite_port                          = $druid::params::emitter_graphite_port,
+  $emitter_graphite_batchSize                     = $druid::params::emitter_graphite_batchSize,
+  $emitter_graphite_eventConverter                = $druid::params::emitter_graphite_eventConverter,
+  $emitter_graphite_flushPeriod                   = $druid::params::emitter_graphite_flushPeriod,
+  $metadata_storage_type                          = $druid::params::metadata_storage_type,
+  $metadata_storage_connector_uri                 = $druid::params::metadata_storage_connector_uri,
+  $metadata_storage_connector_user                = $druid::params::metadata_storage_connector_user,
+  $metadata_storage_connector_password            = $druid::params::metadata_storage_connector_password,
+  $metadata_storage_connector_create_tables       = $druid::params::metadata_storage_connector_create_tables,
+  $metadata_storage_tables_base                   = $druid::params::metadata_storage_tables_base,
+  $metadata_storage_tables_segment_table          = $druid::params::metadata_storage_tables_segment_table,
+  $metadata_storage_tables_rule_table             = $druid::params::metadata_storage_tables_rule_table,
+  $metadata_storage_tables_config_table           = $druid::params::metadata_storage_tables_config_table,
+  $metadata_storage_tables_tasks                  = $druid::params::metadata_storage_tables_tasks,
+  $metadata_storage_tables_task_log               = $druid::params::metadata_storage_tables_task_log,
+  $metadata_storage_tables_task_lock              = $druid::params::metadata_storage_tables_task_lock,
+  $metadata_storage_tables_audit                  = $druid::params::metadata_storage_tables_audit,
+  $storage_type                                   = $druid::params::storage_type,
+  $storage_directory                              = $druid::params::storage_directory,
+  $s3_access_key                                  = $druid::params::s3_access_key,
+  $s3_secret_key                                  = $druid::params::s3_secret_key,
+  $s3_bucket                                      = $druid::params::s3_bucket,
+  $s3_base_key                                    = $druid::params::s3_base_key,
+  $storage_disable_acl                            = $druid::params::storage_disable_acl,
+  $s3_archive_bucket                              = $druid::params::s3_archive_bucket,
+  $s3_archive_base_key                            = $druid::params::s3_archive_base_key,
+  $hdfs_directory                                 = $druid::params::hdfs_directory,
+  $cassandra_host                                 = $druid::params::cassandra_host,
+  $cassandra_keyspace                             = $druid::params::cassandra_keyspace,
+  $cache_type                                     = $druid::params::cache_type,
+  $cache_size_in_bytes                            = $druid::params::cache_size_in_bytes,
+  $cache_initial_size                             = $druid::params::cache_initial_size,
+  $cache_log_eviction_count                       = $druid::params::cache_log_eviction_count,
+  $cache_expiration                               = $druid::params::cache_expiration,
+  $cache_timeout                                  = $druid::params::cache_timeout,
+  $cache_hosts                                    = $druid::params::cache_hosts,
+  $cache_max_object_size                          = $druid::params::cache_max_object_size,
+  $cache_memcached_prefix                         = $druid::params::cache_memcached_prefix,
+  $cache_expire_after                             = $druid::params::cache_expire_after,
+  $selectors_indexing_service_name                = $druid::params::selectors_indexing_service_name,
+  $selectors_coordinator_service_name             = $druid::params::selectors_coordinator_service_name,
+  $announcer_type                                 = $druid::params::announcer_type,
+  $announcer_segments_per_node                    = $druid::params::announcer_segments_per_node,
+  $announcer_max_bytes_per_node                   = $druid::params::announcer_max_bytes_per_node,
+  $azure_logs_container                           = $druid::params::indexing_azure_logs_container,
+  $azure_logs_prefix                              = $druid::params::indexing_azure_logs_prefix,
+  $hdfs_logs_directory                            = $druid::params::indexing_hdfs_logs_directory,
+  $local_logs_directory                           = $druid::params::indexing_local_logs_directory,
+  $logs_type                                      = $druid::params::indexing_logs_type,
+  $s3_logs_bucket                                 = $druid::params::indexing_s3_logs_bucket,
+  $s3_logs_prefix                                 = $druid::params::indexing_s3_logs_prefix,
 ) inherits druid::params {
+
+  ### BEGIN VALIDATIONS ###
+
   validate_string(
     $extensions_local_repository,
     $zk_service_host,
@@ -595,7 +632,6 @@ class druid (
     $hdfs_directory,
     $cassandra_host,
     $cassandra_keyspace,
-    $cache_type,
     $cache_memcached_prefix,
     $selectors_indexing_service_name,
     $selectors_coordinator_service_name,
@@ -636,20 +672,26 @@ class druid (
   validate_integer($announcer_segments_per_node)
   validate_integer($announcer_max_bytes_per_node)
 
-  if $cache_expire_after {
-    validate_integer($cache_expire_after)
-  }
-
   validate_absolute_path($install_dir, $config_dir, $storage_directory)
 
   validate_re($syslog_facility, [
-    'daemon', 'user', 'local0', 'local1', 'local2',
-    'local3', 'local4', 'local5', 'local6', 'local7'
+    '^daemon$', '^user$', '^local0$', '^local1$', '^local2$',
+    '^local3$', '^local4$', '^local5$', '^local6$', '^local7$'
   ])
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
-  validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$', '^composing$', '^switching$'])
+
+  if versioncmp($version, '0.13.0') >= 0 {
+    validate_re($package_name, ['^org.apache.druid$'])
+    validate_re($cache_type, ['^local$', '^memcached$', '^caffeine$'])
+    validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$', '^filtered$'])
+  } else {
+    validate_re($package_name, ['^io.druid$'])
+    validate_re($cache_type, ['^local$', '^memcached$'])
+    validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$', '^slf4j$'])
+  }
+
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
-  validate_re($metadata_storage_type, ['mysql', 'postgres', 'derby'])
+  validate_re($metadata_storage_type, ['^mysql$', '^postgres$', '^derby$'])
   validate_re($announcer_type, ['^lecagy$', '^batch$'])
   validate_re($emitter_logging_logger_class, [
     '^HttpPostEmitter$',
@@ -664,13 +706,7 @@ class druid (
     '^erro$',
   ])
 
-  validate_re($emitter, ['noop', 'logging', 'http', 'graphite'])
-
-  if versioncmp($version, '0.13.0') >= 0 {
-    validate_re($package_name, ['org.apache.druid'])
-  } else {
-    validate_re($package_name, ['io.druid'])
-  }
+  validate_re($emitter, ['^noop$', '^logging$', '^http$', '^graphite$'])
 
   if $emitter == 'graphite' {
     validate_string($emitter_graphite_hostname)
@@ -679,6 +715,18 @@ class druid (
     validate_hash($emitter_graphite_eventConverter)
     validate_integer($emitter_graphite_flushPeriod)
   }
+
+  if $request_logging_type == 'filtered' {
+    validate_integer($request_logging_query_time_threshold_ms)
+    validate_integer($request_logging_sql_query_time_threshold_ms)
+    validate_hash($request_logging_delegate_type)
+  }
+
+  if $cache_type == 'caffeine' and $cache_expire_after {
+    validate_integer($cache_expire_after)
+  }
+
+  ### END VALIDATIONS ###
 
   if $install_java {
     require ::oracle_java
