@@ -164,7 +164,7 @@
 # 
 #   Defaults to `'0'` i.e no filtering.
 # 
-# [*request_logging_delegate_type*]
+# [*request_logging_delegate*]
 #   (Only applicable for logging type 'filtered')
 #   Type of delegate request logger to log requests.
 #   Must be a hash in which a `'type'` of request logging is defined
@@ -526,7 +526,7 @@ class druid (
   $request_logging_feed                           = $druid::params::request_logging_feed,
   $request_logging_query_time_threshold_ms        = $druid::params::request_logging_query_time_threshold_ms,
   $request_logging_sql_query_time_threshold_ms    = $druid::params::request_logging_sql_query_time_threshold_ms,
-  $request_logging_delegate_type                  = $druid::params::request_logging_delegate_type,
+  $request_logging_delegate                       = $druid::params::request_logging_delegate,
   $monitoring_emission_period                     = $druid::params::monitoring_emission_period,
   $monitoring_monitors                            = $druid::params::monitoring_monitors,
   $emitter                                        = $druid::params::emitter,
@@ -719,7 +719,7 @@ class druid (
   if $request_logging_type == 'filtered' {
     validate_integer($request_logging_query_time_threshold_ms)
     validate_integer($request_logging_sql_query_time_threshold_ms)
-    validate_hash($request_logging_delegate_type)
+    validate_hash($request_logging_delegate)
   }
 
   if $cache_type == 'caffeine' and $cache_expire_after {

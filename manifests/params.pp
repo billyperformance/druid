@@ -34,7 +34,7 @@ class druid::params() {
   $request_logging_feed                               = 'druid'
   $request_logging_query_time_threshold_ms            = 0
   $request_logging_sql_query_time_threshold_ms        = 0
-  $request_logging_delegate_type                      = undef
+  $request_logging_delegate                           = undef
   $monitoring_emission_period                         = 'PT1m'
   $monitoring_monitors                                = []
   $emitter                                            = 'logging'

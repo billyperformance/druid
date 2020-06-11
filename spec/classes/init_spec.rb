@@ -312,7 +312,7 @@ describe 'druid', :type => 'class' do
         :request_logging_type                         => 'filtered',
         :request_logging_query_time_threshold_ms      => 1000,
         :request_logging_sql_query_time_threshold_ms  => 1000,
-        :request_logging_delegate_type                => { 'type' => 'slf4j' },
+        :request_logging_delegate                     => { 'type' => 'slf4j' },
       }
     end
 
